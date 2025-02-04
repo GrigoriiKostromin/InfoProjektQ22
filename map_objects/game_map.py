@@ -1,0 +1,31 @@
+from map_objects.tile import Tile
+
+
+class GameMap:
+    def __init__(self, width, height):
+        #Dimensionen des Levels aus engine.py
+        self.width = width
+        self.height = height
+        #?
+        self.tiles = self.initialize_tiles()
+
+
+    def initialize_tiles(self):
+        #Tiles ist Klasse, in welcher zusünde von Kacheln defeniert sind. Diese können hier später festgelegt werden
+        tiles = [[Tile(False) for y in range(self.height)] for x in range(self.width)]
+
+        #Blockierte Kacheln = Wand. Koordinateten von Wänden müssen manuell angegeben werden 
+        tiles[30][22].blocked = True
+        tiles[30][22].block_sight = True
+        tiles[31][22].blocked = True
+        tiles[31][22].block_sight = True
+        tiles[32][22].blocked = True
+        tiles[32][22].block_sight = True
+
+        return tiles
+    
+    def is_blocked(self, x, y):
+        if self.tiles[x][y].blocked:
+            return True
+
+        return False
