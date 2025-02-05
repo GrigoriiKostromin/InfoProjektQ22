@@ -37,6 +37,7 @@ def main():
     
     #Karte wird erzeugt
     game_map = GameMap(map_width, map_height)
+    game_map.make_map()
 
     #Variablen, die mit dem Input verbunden sind
     key = libtcod.Key()
