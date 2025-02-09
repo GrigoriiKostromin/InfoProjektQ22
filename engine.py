@@ -5,8 +5,6 @@ from render_functions import clear_all, render_all
 from map_objects.game_map import GameMap
 
 
-
-
 def main():
     #Bildschirmgröße (im kleinen Zustand)
     screen_width = 80
