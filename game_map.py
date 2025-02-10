@@ -20,7 +20,7 @@ class GameMap:
 
 
        
-        
+        # Test Wandkreation 
         """
         #Blockierte Kacheln = Wand. Koordinateten von Wänden müssen manuell angegeben werden 
         tiles[30][22].blocked = True
@@ -31,6 +31,8 @@ class GameMap:
         tiles[32][22].block_sight = True """
 
         return tiles
+    
+    # Test Raumkreation
     """ 
     def make_map(self): # Zwei Räume und Tunnel testweise erstellen
         room1 = Rect(20, 15, 10, 15)
@@ -39,6 +41,8 @@ class GameMap:
         self.create_room(room1)
         self.create_room(room2)
         self.create_h_tunnel(25, 40, 23) """
+    
+
     def make_map(self, max_rooms, room_min_size, room_max_size, map_width, map_height, player):
 
         rooms = [] # Eine Liste in der alle Räume aufgeführt werden
