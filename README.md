@@ -8,6 +8,8 @@ Um diese Anwendung zu starten müssen folgende Kriterien erfüllt werden:
 - Es sollte midestens Python 3.7 installiert sein.
 - Es sollte die neuste Version von TCOD installiert sein.
 
+ghp_hAHkBZ6LI1shPv675hOeAV2KnlkZH73CvJ5J
+
 Verwende `Python -V`, um die installierte Version zu überprüfen.
 Wenn die Pyhton Version unter 3.7 ist benutze ``
 Benutze `pip install tcod`, um TCOD zu installieren.
