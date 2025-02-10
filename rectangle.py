@@ -1,19 +1,18 @@
 
-#Erstellen einer Klasse fï¿½r einfache Raumkreation (von x1, bis x2... um spï¿½ter die Koordinaten zu haben)
+#Erstellen einer Klasse für einfache Raumkreation (von x1, bis x2... um später die Koordinaten zu haben)
 class Rect:
-    def __init__(self, x, y, w, h): # w fï¿½r weite und h fï¿½r hï¿½he. x1 & y1 fï¿½r die Koordinate oben links und die mit zwei fï¿½r unten rechts
+    def __init__(self, x, y, w, h): # w für weite und h für höhe. x1 & y1 für die Koordinate oben links und die mit zwei für unten rechts
         self.x1 = x
         self.y1 = y
         self.x2 = x + w
         self.y2 = y + h
 
-    # FÃ¼r die Berechnung des Mittelpunktes von einem Raum/Rectangle
-    def center(self): 
-        center_x = int((self.x1 + self.x2) / 2) 
+    def center(self):
+        center_x = int((self.x1 + self.x2) / 2)
         center_y = int((self.y1 + self.y2) / 2)
         return (center_x, center_y)
 
     def intersect(self, other):
-        # True wird ausgegeben, wenn ein Raum einen anderen schneidet. 
-        return (self.x1 <= other.x2 and self.x2 >= other.x1 and # Mithilfe von other, was oben eingegeben wird beim Erstellen festgelegt welcher Raum gemeint ist, der dann abgerufen wird
-                self.y1 <= other.y2 and self.y2 >= other.y1) # Mathematik :)
+        # returns true if this rectangle intersects with another one
+        return (self.x1 <= other.x2 and self.x2 >= other.x1 and
+                self.y1 <= other.y2 and self.y2 >= other.y1)
