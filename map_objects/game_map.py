@@ -16,7 +16,7 @@ class GameMap:
 
     def initialize_tiles(self):
         #Tiles ist Klasse, in welcher zusünde von Kacheln defeniert sind. Diese können hier später festgelegt werden
-        tiles = [[Tile(True) for y in range(self.height)] for x in range(self.width)]
+        tiles = [[Tile(True) for y in range(self.height)] for x in range(self.width)] # Alle Kacheln auf den Bildschirm werden als Tiles festgelegt. 
 
 
        
@@ -97,10 +97,10 @@ class GameMap:
                 rooms.append(new_room)
                 num_rooms += 1
 
-    def create_room(self, room): #Sorgt quasi dafür dass innerhalb von dem in Rect festgelegten Rechteck es für den Spieler begehbar ist und er es auch sehen kann
-        for x in range(room.x1 + 1, room.x2):
-            for y in range(room.y1 + 1, room.y2):
-                self.tiles[x][y].blocked = False
+    def create_room(self, room):  #Sorgt quasi dafür dass innerhalb von dem in Rect festgelegten Rechteck es für den Spieler begehbar ist und er es auch sehen kann
+        for x in range(room.x1 + 1, room.x2): # Hier wird quasi jede einzelne Kachel ausgezählt und in die "liste" x dann eingesetzt
+            for y in range(room.y1 + 1, room.y2): # Hier das selbe mit all den y Werten
+                self.tiles[x][y].blocked = False #Hier werden jetzt alle Kacheln die wir in der Liste x und der Liste y haben durchgegangen und die Variable blocked wird auf false gesetzt, sodass wir sie begehen können
                 self.tiles[x][y].block_sight = False
 
     def create_h_tunnel(self, x1, x2, y): 

@@ -15,8 +15,8 @@ class GameMap:
 
 
     def initialize_tiles(self):
-        #Tiles ist Klasse, in welcher zusünde von Kacheln defeniert sind. Diese können hier später festgelegt werden
-        tiles = [[Tile(True) for y in range(self.height)] for x in range(self.width)]
+        #Tiles ist Klasse, in welcher zustände von Kacheln defeniert sind. Diese können hier später festgelegt werden
+        tiles = [[Tile(True) for y in range(self.height)] for x in range(self.width)] # Quasi der ganze Bereich des Bildschirms
 
 
        
