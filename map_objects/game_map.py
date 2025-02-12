@@ -32,7 +32,7 @@ class GameMap:
 
         return tiles
    
-    def make_map(self, max_rooms, room_min_size, room_max_size, map_width, map_height, player): # Zwei Räume und Tunnel testweise erstellen
+    def make_map(self, max_rooms, room_min_size, room_max_size, map_width, map_height, player, npc): # Zwei Räume und Tunnel testweise erstellen
         """room1 = Rect(20, 15, 10, 15)
         room2 = Rect(35, 15, 10, 15)
         # Hier wird ein Raum mithilfe der rect methode die wir in rectangle.py festgelegt haben erstellt
@@ -67,11 +67,15 @@ class GameMap:
 
                 # Hier werden einfach die Koordinten vom Mittelpunkt des neuerstellten Raumes berechnet, um sie später für das "platzieren" des Spielers verwendet werden
                 (new_x, new_y) = new_room.center()
-
+                (new2_x, new2_y) = new_room.center()
+                
                 if num_rooms == 0:
                     # Hier wird der Spieler im zuerst generierten Raum (num_rooms ist nur ganz am Anfang 0, direkt danach wird die Nummer immer +1 gemacht) platziert
                     player.x = new_x
                     player.y = new_y
+                elif num_rooms == 1:
+                    npc.x = new2_x
+                    npc.y = new2_y
 
                 else:
                     # Das gilt jetzt für alle Räume, die NICHT der erste sind. Hier werden jetzt die Räume mit den Tunneln verbunden (würde beim ersten keinen Sinnn ergeben, da der ja noch nichts hätte womit man ihn verbinden könnte)

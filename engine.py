@@ -41,7 +41,7 @@ def main():
     
     #Karte wird erzeugt
     game_map = GameMap(map_width, map_height)
-    game_map.make_map(max_rooms, room_min_size, room_max_size, map_width, map_height, player) # Es werden die Methoden in Gamemap gecalled mit den zufällig festgelegten Variablen
+    game_map.make_map(max_rooms, room_min_size, room_max_size, map_width, map_height, player, npc) # Es werden die Methoden in Gamemap gecalled mit den zufällig festgelegten Variablen
 
     #Variablen, die mit dem Input verbunden sind
     key = libtcod.Key()
