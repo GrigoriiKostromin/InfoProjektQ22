@@ -34,6 +34,26 @@ def render_all(con, entities, game_map, fov_map, fov_recompute, screen_width, sc
     libtcod.console_blit(con, 0, 0, screen_width, screen_height, 0, 0, 0)
 
 
+def render_all1(con, entities, game_map, screen_width, screen_height, colors):
+    #Rebdert alle Kacheln auf der Karte
+    for y in range(game_map.height):
+        for x in range(game_map.width):
+            #Sichtfeld
+            wall = game_map.tiles[x][y].block_sight
+
+            #Visuelle Unterscheidung zwischen Wand und nicht Wand
+            if wall:
+                libtcod.console_set_char_background(con, x, y, colors.get('dark_wall'), libtcod.BKGND_SET)
+            else:
+                libtcod.console_set_char_background(con, x, y, colors.get('dark_ground'), libtcod.BKGND_SET)
+
+    #Rendert alle Entititäten aus der Liste
+    for entity in entities:
+        draw_entity1(con, entity)
+
+    libtcod.console_blit(con, 0, 0, screen_width, screen_height, 0, 0, 0)
+
+
 # Alles, was gerendert wurde, wird gelöscht, um ein neues Bild zu rendern. Es wird immer bei einer Aktion vom Spieler ein neues Frame erzeugt 
 def clear_all(con, entities):
     for entity in entities:
@@ -46,6 +66,11 @@ def draw_entity(con, entity, fov_map):
     if libtcod.map_is_in_fov(fov_map, entity.x, entity.y):
         libtcod.console_set_default_foreground(con, entity.color)
         libtcod.console_put_char(con, entity.x, entity.y, entity.char, libtcod.BKGND_NONE)
+
+
+def draw_entity1(con, entity):
+    libtcod.console_set_default_foreground(con, entity.color)
+    libtcod.console_put_char(con, entity.x, entity.y, entity.char, libtcod.BKGND_NONE)
 
 
 #Reset nach Zeichnen (Bewegung)

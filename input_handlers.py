@@ -16,6 +16,9 @@ def handle_keys(key):
         # F11: Bildschrimgröße maximal
         return {'fullscreen': True}
 
+    if key.vk == libtcod.KEY_F12:
+        return {'fov_on': False}
+
     elif key.vk == libtcod.KEY_ESCAPE:
         # Spiel beenden
         return {'exit': True}

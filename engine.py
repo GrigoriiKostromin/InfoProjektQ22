@@ -1,7 +1,7 @@
 import tcod as libtcod
 from input_handlers import handle_keys
 from entity import Entity
-from render_functions import clear_all, render_all
+from render_functions import clear_all, render_all, render_all1
 from map_objects.game_map import GameMap
 from fov_functions import initialize_fov, recompute_fov
 
@@ -41,7 +41,7 @@ def main():
     #importieren von assests (bilder)
     libtcod.console_set_custom_font('arial10x10.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
     #Erzeugen der Konsole
-    libtcod.console_init_root(screen_width, screen_height, 'libtcod tutorial revised', False)
+    libtcod.console_init_root(screen_width, screen_height, 'roguelike', False)
 
 
     #Keine Ahnung. Muss schauen, was .console_new macht
@@ -56,7 +56,7 @@ def main():
 
     #Die Map wird als Parameter für die Erezeugung des Sichtfeldes weitergegeben
     fov_map = initialize_fov(game_map)
-
+    fov_on = True
     #Variablen, die mit dem Input verbunden sind
     key = libtcod.Key()
     mouse = libtcod.Mouse()
@@ -73,13 +73,19 @@ def main():
             recompute_fov(fov_map, player.x, player.y, fov_radius, fov_light_walls, fov_algorithm)
 
         #Spieler wird bei jeder Ändeung der Koordianten erzeugt
+        
         render_all(con, entities, game_map, fov_map, fov_recompute, screen_width, screen_height, colors)
+        if fov_on==False:
+            render_all1(con, entities, game_map, screen_width, screen_height, colors)
+        
+            
 
         fov_recompute = False
         libtcod.console_flush()
 
         #Letzer Schritt wird gecleared
         clear_all(con, entities)
+        
 
 
         #Es wir die Methode handle_keys aus input_handlers aufgerufen. An diese Methode wird die Inputvariable key weiter gegeben
@@ -88,6 +94,7 @@ def main():
         move = action.get('move')
         exit = action.get('exit')
         fullscreen = action.get('fullscreen')
+        fov_on = action.get('fov_on')
 
 
         #Bewegung des Spielers
