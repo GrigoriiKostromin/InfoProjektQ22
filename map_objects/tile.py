@@ -8,3 +8,6 @@ class Tile:
             block_sight = blocked
 
         self.block_sight = block_sight
+
+        #Automatisch sind Tiles nicht explored
+        self.explored = False
