@@ -1,7 +1,7 @@
 import tcod as libtcod
 from input_handlers import handle_keys
 from entity import Entity
-from render_functions import clear_all, render_all, render_all1
+from render_functions import clear_all, render_all
 from map_objects.game_map import GameMap
 from fov_functions import initialize_fov, recompute_fov
 
@@ -72,14 +72,10 @@ def main():
         if fov_recompute:
             recompute_fov(fov_map, player.x, player.y, fov_radius, fov_light_walls, fov_algorithm)
 
-        #Spieler wird bei jeder Ändeung der Koordianten erzeugt
-        
+        #Rednerfunktion wird gecalled
         render_all(con, entities, game_map, fov_map, fov_recompute, screen_width, screen_height, colors)
-        if fov_on==False:
-            render_all1(con, entities, game_map, screen_width, screen_height, colors)
         
-            
-
+           
         fov_recompute = False
         libtcod.console_flush()
 
