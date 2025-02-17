@@ -1,7 +1,9 @@
 from map_objects.rectangle import Rect
 from map_objects.tile import Tile
+import tcod as libtcod
 from random import randint
 
+from entity import Entity
 from map_objects.rectangle import Rect
 from map_objects.tile import Tile
 
@@ -32,7 +34,7 @@ class GameMap:
 
         return tiles
    
-    def make_map(self, max_rooms, room_min_size, room_max_size, map_width, map_height, player, npc): # Zwei Räume und Tunnel testweise erstellen
+    def make_map(self, max_rooms, room_min_size, room_max_size, map_width, map_height, player, entities, max_monsters_per_room): # Zwei Räume und Tunnel testweise erstellen ||| Sonst so: def make_map(self, max_rooms, room_min_size, room_max_size, map_width, map_height, player, npc)
         """room1 = Rect(20, 15, 10, 15)
         room2 = Rect(35, 15, 10, 15)
         # Hier wird ein Raum mithilfe der rect methode die wir in rectangle.py festgelegt haben erstellt
@@ -69,11 +71,11 @@ class GameMap:
                 (new_x, new_y) = new_room.center()
                 (new2_x, new2_y) = new_room.center()
                 
-                
+                """
                     
                 if num_rooms == 1:
                     npc.x = new2_x
-                    npc.y = new2_y
+                    npc.y = new2_y """
                 if num_rooms == 0:
                     # Hier wird der Spieler im zuerst generierten Raum (num_rooms ist nur ganz am Anfang 0, direkt danach wird die Nummer immer +1 gemacht) platziert
                     player.x = new_x
@@ -93,6 +95,8 @@ class GameMap:
                         # Zuerst einen Vertikalen, dann einen Horizontalen
                         self.create_v_tunnel(prev_y, new_y, prev_x)
                         self.create_h_tunnel(prev_x, new_x, new_y)
+                # Pro Raum wird immer VIELLEICHT ein Mob platziert
+                self.place_entities(new_room, entities, max_monsters_per_room) # Hier wird unsere Methode "Place Entities" gecalled, und die Werte übergeben. 
 
                 # num_rooms wird 1 zugefügt, weil wir jetzt zum nächsten Raum kommen und der gerade eben erstellte Raum wird der Liste hinzugefügt
                 rooms.append(new_room)
@@ -113,6 +117,23 @@ class GameMap:
         for y in range(min(y1, y2), max(y1, y2) + 1):
             self.tiles[x][y].blocked = False
             self.tiles[x][y].block_sight = False
+
+    def place_entities(self, room, entities, max_monsters_per_room):
+        # Hier wird eine zufällige Nummer generiert, wie viele Gegner auf der Karte auftauchen sollen
+        number_of_monsters = randint(0, max_monsters_per_room)
+
+        for i in range(number_of_monsters):
+            # Zufällige Koordinaten von einem Raum der erstellt wurde
+            x = randint(room.x1 + 1, room.x2 - 1)
+            y = randint(room.y1 + 1, room.y2 - 1)
+
+            if not any([entity for entity in entities if entity.x == x and entity.y == y]):
+                if randint(0, 100) < 80: # Es wird zu 80% ein Ork und zu 20% ein Troll
+                    monster = Entity(x, y, 'o', libtcod.desaturated_red, 'Orc', blocks=True) # Quasi ein Ork 
+                else:
+                    monster = Entity(x, y, 'T', libtcod.darker_red, 'Troll', blocks=True) # Hier ein Troll.
+
+                entities.append(monster)
 
     def is_blocked(self, x, y):
         if self.tiles[x][y].blocked:
