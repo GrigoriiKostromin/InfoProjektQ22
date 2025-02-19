@@ -2,9 +2,10 @@ import tcod as libtcod
 from fov_functions import initialize_fov, recompute_fov
 from game_states import GameStates
 from input_handlers import handle_keys
-from entity import Entity, get_blocking_entities_at_location
 from render_functions import clear_all, render_all
 from map_objects.game_map import GameMap
+from components.fighter import Fighter
+from entity import Entity, get_blocking_entities_at_location
 
 
 def main():
@@ -40,7 +41,8 @@ def main():
     npc = Entity(int(screen_width / 2 - 5), int(screen_height / 2), '@', libtcod.red)
     entities = [npc, player]"""
 
-    player = Entity(0, 0, '@', libtcod.white, 'Player', blocks=True)
+    fighter_component = Fighter(hp=30, defense=2, power=5) # fighter_component gibt den Spieler Werte, die nötig sind, um zu kämpfen
+    player = Entity(0, 0, '@', libtcod.white, 'Player', blocks=True, fighter=fighter_component) # Erzeugen eines Spieler aus der Entity Klasse 
     entities = [player]
 
     #importieren von assests (bilder)
@@ -125,9 +127,9 @@ def main():
 
         if game_state == GameStates.ENEMY_TURN: # Hier werden die einzelnen Gegner durchgegangen und es wird geschaut was sie alle machen.
             for entity in entities: 
-                if entity != player: # Hierbei wird natürlich der Spieler ausgelassen.
-                    print('Der ' + entity.name + ' hat gerade keine Lust sich zu bewegen :(') # Das ist hier nur als Platzhalter, hier werden später die "AI" von den Mobs geregelt
-
+                if entity.ai: # Hierbei wird natürlich der Spieler ausgelassen.
+                    """print('Der ' + entity.name + ' hat gerade keine Lust sich zu bewegen :(')""" # Das ist hier nur als Platzhalter, hier werden später die "AI" von den Mobs geregelt
+                    entity.ai.take_turn() #Ist ein Ersatz für den Schritt, der rauskommentiert wurde. Ist das selbe, nur, dass es in einer separaten Klasse ist
             game_state = GameStates.PLAYERS_TURN
 
 #Es wird nur die main Funktion ausgeführt
