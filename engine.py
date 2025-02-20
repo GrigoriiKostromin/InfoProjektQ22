@@ -129,7 +129,7 @@ def main():
             for entity in entities: 
                 if entity.ai: # Hierbei wird natürlich der Spieler ausgelassen.
                     """print('Der ' + entity.name + ' hat gerade keine Lust sich zu bewegen :(')""" # Das ist hier nur als Platzhalter, hier werden später die "AI" von den Mobs geregelt
-                    entity.ai.take_turn() #Ist ein Ersatz für den Schritt, der rauskommentiert wurde. Ist das selbe, nur, dass es in einer separaten Klasse ist
+                    entity.ai.take_turn(player, fov_map, game_map, entities) #Ist ein Ersatz für den Schritt, der rauskommentiert wurde. Ist das selbe, nur, dass es in einer separaten Klasse ist
             game_state = GameStates.PLAYERS_TURN
 
 #Es wird nur die main Funktion ausgeführt

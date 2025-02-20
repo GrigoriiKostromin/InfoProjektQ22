@@ -136,14 +136,14 @@ class GameMap:
                     fighter_component = Fighter(hp=10, defense=0, power=3) #Kampfattribute, die mit der Entity Klasse in Verbindug stehen
                     ai_component = BasicMonster()   #AI, die "später" das autonome Bewegen der Gegner ermöglichen wird
 
-                    monster = Entity(x, y, 'o', libtcod.desaturated_green, 'Orc', blocks=True,
+                    monster = Entity(x, y, 'o', libtcod.desaturated_red, 'Orc', blocks=True,
                                      fighter=fighter_component, ai=ai_component) # Quasi ein Ork. Ork bekommt eine AI und Kampfattribute
                 else:
 
                     fighter_component = Fighter(hp=16, defense=1, power=4)#Kampfattribute, die mit der Entity Klasse in Verbindug stehen
                     ai_component = BasicMonster()   #AI, die "später" das autonome Bewegen der Gegner ermöglichen wird
 
-                    monster = monster = Entity(x, y, 'T', libtcod.darker_green, 'Troll', blocks=True, fighter=fighter_component,
+                    monster = monster = Entity(x, y, 'T', libtcod.darker_red, 'Troll', blocks=True, fighter=fighter_component,
                                      ai=ai_component) # Hier ein Troll. Ork bekommt eine AI und Kampfattribute
 
                 entities.append(monster)
