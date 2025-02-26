@@ -7,7 +7,7 @@ class BasicMonster:
         if libtcod.map_is_in_fov(fov_map, monster.x, monster.y): # Wenn diese Stelle in Sicht ist. 
 
             if monster.distance_to(target) >= 2: # Näher herantreten, wenn zu weit weg ist.
-                monster.move_towards(target.x, target.y, game_map, entities)
+                monster.move_astar(target, entities, game_map)  #movestar Algorhitmus
 
             elif target.fighter.hp > 0: 
-                print('The {0} insults you! Your ego is damaged!'.format(monster.name))
+                monster.fighter.attack(target) # Angriff vom Monster aus

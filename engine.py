@@ -110,7 +110,7 @@ def main():
                 target = get_blocking_entities_at_location(entities, destination_x, destination_y) # Hier wird dann die Entity ausgegeben
 
                 if target: # Wenn du gegen eine Entity rennst, dann geschieht das 
-                    print('Du hast den ' + target.name + ' getreten! Wie kannst du es wagen???') # Das steht hier zunächst, bevor ein wirkliches Ergebnis hier hingeschrieben wird.
+                    player.fighter.attack(target) # Funktion um Schaden zu machen, wird in der Konsole ausgegeben
                 else:
                     player.move(dx, dy) # Wenn du in niemanden reinrennst, wird einfach die Bewegung wie immer durchgeführt
                     #Diese Variable muss True sein, damit sich das Sichtfeld ändert. Diese Variable ist nur True, wenn die Koordinaten des Spielers sich änder.
