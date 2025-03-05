@@ -8,15 +8,34 @@ class Fighter:
         
     #Funktion, um Schaden zu nehmen
     def take_damage(self, amount):
+        #Liste für Ergebnisse
+        results = []
+
         self.hp -= amount
 
-    #Funktion, um Schaden zu machen
+        #Wenn Spieler tot, Liste erweitern    
+        if self.hp <= 0:
+            results.append({'dead': self.owner})
+
+        return results
+
     def attack(self, target):
+
+        #Liste für Ergebnisse
+        results = []
+
         damage = self.power - target.fighter.defense
 
-        # Schaden in der Konsole ausgeben
+        #Liste wird erweitert
         if damage > 0:
             target.fighter.take_damage(damage)
             print('{0} attacks {1} for {2} hit points.'.format(self.owner.name.capitalize(), target.name, str(damage)))
+            results.append({'message': '{0} attacks {1} for {2} hit points.'.format(
+                self.owner.name.capitalize(), target.name, str(damage))})
+            results.extend(target.fighter.take_damage(damage))
         else:
             print('{0} attacks {1} but does no damage.'.format(self.owner.name.capitalize(), target.name))
+            results.append({'message': '{0} attacks {1} but does no damage.'.format(
+                self.owner.name.capitalize(), target.name)})
+
+        return results

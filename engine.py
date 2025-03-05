@@ -99,6 +99,8 @@ def main():
         fullscreen = action.get('fullscreen')
         fov_on = action.get('fov_on')
 
+        #Eine Liste zum Speichern der Ergebnisse der Aktionen des Spielers während seines Zuges
+        player_turn_results = []
 
         #Bewegung des Spielers
         if move and game_state == GameStates.PLAYERS_TURN: # Hier wird getestet, ob der Spieler an der Reihe ist. (Also ob die Gegner sich schon bewegt haben)
@@ -110,7 +112,9 @@ def main():
                 target = get_blocking_entities_at_location(entities, destination_x, destination_y) # Hier wird dann die Entity ausgegeben
 
                 if target: # Wenn du gegen eine Entity rennst, dann geschieht das 
-                    player.fighter.attack(target) # Funktion um Schaden zu machen, wird in der Konsole ausgegeben
+                    # Wenn es ein Ziel gibt, greift der Spieler. Speichert Ergebnisse des Angriffs
+                    attack_results = player.fighter.attack(target)
+                    player_turn_results.extend(attack_results)
                 else:
                     player.move(dx, dy) # Wenn du in niemanden reinrennst, wird einfach die Bewegung wie immer durchgeführt
                     #Diese Variable muss True sein, damit sich das Sichtfeld ändert. Diese Variable ist nur True, wenn die Koordinaten des Spielers sich änder.
@@ -122,15 +126,44 @@ def main():
         if exit:
             return True
 
+
+
         if fullscreen:
             libtcod.console_set_fullscreen(not libtcod.console_is_fullscreen())
+
+
+        # Verarbeitet alle Ergebnisse aus dem Zug des Spielers wie Kampfmeldungen 
+        for player_turn_result in player_turn_results:
+            message = player_turn_result.get('message')
+            dead_entity = player_turn_result.get('dead')
+
+            if message:
+                print(message)
+
+            if dead_entity:
+                pass # We'll do something here momentarily
+
+
 
         if game_state == GameStates.ENEMY_TURN: # Hier werden die einzelnen Gegner durchgegangen und es wird geschaut was sie alle machen.
             for entity in entities: 
                 if entity.ai: # Hierbei wird natürlich der Spieler ausgelassen.
-                    """print('Der ' + entity.name + ' hat gerade keine Lust sich zu bewegen :(')""" # Das ist hier nur als Platzhalter, hier werden später die "AI" von den Mobs geregelt
-                    entity.ai.take_turn(player, fov_map, game_map, entities) #Ist ein Ersatz für den Schritt, der rauskommentiert wurde. Ist das selbe, nur, dass es in einer separaten Klasse ist
-            game_state = GameStates.PLAYERS_TURN
+                    #Die KI mit dem Spieler und der Umgebung interagieren.
+                    enemy_turn_results = entity.ai.take_turn(player, fov_map, game_map, entities)
+
+                    # Verarbeiten Sie alle Ergebnisse der Aktionen des Feindes.
+                    for enemy_turn_result in enemy_turn_results:
+                        message = enemy_turn_result.get('message')
+                        dead_entity = enemy_turn_result.get('dead')
+
+                        if message:
+                            print(message)
+
+                        if dead_entity:
+                            pass
+
+            else:
+                game_state = GameStates.PLAYERS_TURN
 
 #Es wird nur die main Funktion ausgeführt
 if __name__ == '__main__':
