@@ -7,8 +7,24 @@ class RenderOrder(Enum):
     ITEM = 2
     ACTOR = 3
 
+#Renderfunktion für die Lebensanzeige
+def render_bar(panel, x, y, total_width, name, value, maximum, bar_color, back_color):
+    bar_width = int(float(value) / maximum * total_width)
+
+    libtcod.console_set_default_background(panel, back_color)
+    libtcod.console_rect(panel, x, y, total_width, 1, False, libtcod.BKGND_SCREEN)
+
+    libtcod.console_set_default_background(panel, bar_color)
+    if bar_width > 0:
+        libtcod.console_rect(panel, x, y, bar_width, 1, False, libtcod.BKGND_SCREEN)
+
+    libtcod.console_set_default_foreground(panel, libtcod.white)
+    libtcod.console_print_ex(panel, int(x + total_width / 2), y, libtcod.BKGND_NONE, libtcod.CENTER,
+                             '{0}: {1}/{2}'.format(name, value, maximum))
+
 #Render Funktion für die Map
-def render_all(con, entities, player, game_map, fov_map, fov_recompute, screen_width, screen_height, colors):
+def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, screen_width, screen_height, bar_width,
+               panel_height, panel_y, colors):
     #Karte nur aktualisieren, wenn sich das Sichtfeld ändert. Es wird nur das angezeigt, was im Sichtfeld war oder im Sichtfeld gewesen ist
     if fov_recompute:
         #Durchläuft jede Koordinate der Karte
@@ -49,6 +65,16 @@ def render_all(con, entities, player, game_map, fov_map, fov_recompute, screen_w
 
     #Kopiert Inhalt vom Root, um Rahmen anzuzeigen
     libtcod.console_blit(con, 0, 0, screen_width, screen_height, 0, 0, 0)
+
+    #UI Panel erzeugen, Schwarz
+    libtcod.console_set_default_background(panel, libtcod.black)
+    libtcod.console_clear(panel)
+
+    #Lebensbar erzeugen
+    render_bar(panel, 1, 1, bar_width, 'HP', player.fighter.hp, player.fighter.max_hp,
+               libtcod.light_red, libtcod.darker_red)
+
+    libtcod.console_blit(panel, 0, 0, screen_width, panel_height, 0, 0, panel_y)
 
 # Alles, was gerendert wurde, wird gelöscht, um ein neues Bild zu rendern. Es wird immer bei einer Aktion vom Spieler ein neues Frame erzeugt 
 def clear_all(con, entities):
