@@ -11,12 +11,10 @@ class RenderOrder(Enum):
 def get_names_under_mouse(mouse, entities, fov_map):
     (x, y) = (mouse.cx, mouse.cy)
 
-
+    #Es werden die Namen der Entitäten, die sich auf den Koordianten der Maus befinden in die Variable Name gepackt
     names = [entity.name for entity in entities
              if entity.x == x and entity.y == y and libtcod.map_is_in_fov(fov_map, entity.x, entity.y)]
     names = ', '.join(names)
-
-  
 
     return names.capitalize()
 

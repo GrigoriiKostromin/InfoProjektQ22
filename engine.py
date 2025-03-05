@@ -177,7 +177,7 @@ def main():
                     #Die KI mit dem Spieler und der Umgebung interagieren lassen.
                     enemy_turn_results = entity.ai.take_turn(player, fov_map, game_map, entities)
 
-                    # Verarbeiten Sie alle Ergebnisse der Aktionen des Feindes.
+                    # Verarbeiten von der Ergebnisse der Aktionen des Feindes.
                     for enemy_turn_result in enemy_turn_results:
                         message = enemy_turn_result.get('message')
                         dead_entity = enemy_turn_result.get('dead')
