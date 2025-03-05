@@ -1,17 +1,19 @@
 import math
 import tcod as libtcod
+from render_functions import RenderOrder
 
 class Entity:
     #Ein allgemeines Objekt zur Darstellung von Spielern, Feinden, Gegenständen usw.
     # Das "= False" zeigt quasi an, dass ein Wert nicht unbedingt übergeben werden muss. Wenn nichts übergeben wird, wird es automatisch erstmal auf false gesetzt 
     # fighter und ai Komponenten sind optional, da Objekte auch Gegenstände darstellen können
-    def __init__(self, x, y, char, color, name, blocks=False, fighter=None, ai=None):
+    def __init__(self, x, y, char, color, name, blocks=False, render_order=RenderOrder.CORPSE, fighter=None, ai=None):
         self.x = x
         self.y = y
         self.char = char
         self.color = color
         self.name = name
         self.blocks = blocks
+        self.render_order = render_order
         self.fighter = fighter
         self.ai = ai
 

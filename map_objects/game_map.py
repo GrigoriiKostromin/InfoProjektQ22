@@ -2,6 +2,7 @@ from map_objects.rectangle import Rect
 from map_objects.tile import Tile
 import tcod as libtcod
 from random import randint
+from render_functions import RenderOrder
 
 from components.ai import BasicMonster
 from components.fighter import Fighter
@@ -136,8 +137,8 @@ class GameMap:
                     fighter_component = Fighter(hp=10, defense=0, power=3) #Kampfattribute, die mit der Entity Klasse in Verbindug stehen
                     ai_component = BasicMonster()   #AI, die "später" das autonome Bewegen der Gegner ermöglichen wird
 
-                    monster = Entity(x, y, 'o', libtcod.desaturated_red, 'Orc', blocks=True,
-                                     fighter=fighter_component, ai=ai_component) # Quasi ein Ork. Ork bekommt eine AI und Kampfattribute
+                    monster = Entity(x, y, 'T', libtcod.darker_green, 'Troll', blocks=True, fighter=fighter_component,
+                                     render_order=RenderOrder.ACTOR, ai=ai_component) # Quasi ein Ork. Ork bekommt eine AI und Kampfattribute
                 else:
 
                     fighter_component = Fighter(hp=16, defense=1, power=4)#Kampfattribute, die mit der Entity Klasse in Verbindug stehen

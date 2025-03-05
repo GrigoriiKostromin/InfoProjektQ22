@@ -1,5 +1,5 @@
 import tcod as libtcod
-
+from render_functions import RenderOrder
 from game_states import GameStates
 
 #Wenn Spieler Tod ist
@@ -23,5 +23,6 @@ def kill_monster(monster):
     monster.fighter = None
     monster.ai = None
     monster.name = 'remains of ' + monster.name
+    monster.render_order = RenderOrder.CORPSE #Renderreihenfolge wird geeändert, sobald ein Monter stirbt. Wenn nicht, dann ist das Monster über dem Spieler
 
     return death_message

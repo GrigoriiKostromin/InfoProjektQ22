@@ -2,10 +2,11 @@ import tcod as libtcod
 from fov_functions import initialize_fov, recompute_fov
 from game_states import GameStates
 from input_handlers import handle_keys
-from render_functions import clear_all, render_all
+from render_functions import clear_all, render_all, RenderOrder
 from map_objects.game_map import GameMap
 from components.fighter import Fighter
 from entity import Entity, get_blocking_entities_at_location
+from death_functions import kill_monster, kill_player
 
 
 def main():
@@ -42,7 +43,7 @@ def main():
     entities = [npc, player]"""
 
     fighter_component = Fighter(hp=30, defense=2, power=5) # fighter_component gibt den Spieler Werte, die nötig sind, um zu kämpfen
-    player = Entity(0, 0, '@', libtcod.white, 'Player', blocks=True, fighter=fighter_component) # Erzeugen eines Spieler aus der Entity Klasse 
+    player = Entity(0, 0, '@', libtcod.white, 'Player', blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component) # Erzeugen eines Spieler aus der Entity Klasse 
     entities = [player]
 
     #importieren von assests (bilder)
@@ -80,7 +81,7 @@ def main():
             recompute_fov(fov_map, player.x, player.y, fov_radius, fov_light_walls, fov_algorithm)
 
         #Rednerfunktion wird gecalled
-        render_all(con, entities, game_map, fov_map, fov_recompute, screen_width, screen_height, colors)
+        render_all(con, entities, player, game_map, fov_map, fov_recompute, screen_width, screen_height, colors)
         
            
         fov_recompute = False
@@ -141,14 +142,20 @@ def main():
                 print(message)
 
             if dead_entity:
-                pass # We'll do something here momentarily
+                #Wenn Spieler stirbt, wird kill_player gecalled
+                if dead_entity == player:
+                    message, game_state = kill_player(dead_entity)
+                #Wenn Gegner stirbt, wird kill_monster gecalled
+                else:
+                    message = kill_monster(dead_entity)
 
+                print(message)
 
 
         if game_state == GameStates.ENEMY_TURN: # Hier werden die einzelnen Gegner durchgegangen und es wird geschaut was sie alle machen.
             for entity in entities: 
                 if entity.ai: # Hierbei wird natürlich der Spieler ausgelassen.
-                    #Die KI mit dem Spieler und der Umgebung interagieren.
+                    #Die KI mit dem Spieler und der Umgebung interagieren lassen.
                     enemy_turn_results = entity.ai.take_turn(player, fov_map, game_map, entities)
 
                     # Verarbeiten Sie alle Ergebnisse der Aktionen des Feindes.
@@ -158,9 +165,24 @@ def main():
 
                         if message:
                             print(message)
-
+                        
+                        
                         if dead_entity:
-                            pass
+                            #Wenn Spieler stirbt, wird kill_player gecalled
+                            if dead_entity == player:
+                                message, game_state = kill_player(dead_entity)
+                            #Wenn Gegner stirbt, wird kill_monster gecalled
+                            else:
+                                message = kill_monster(dead_entity)
+
+                            print(message)
+                            
+                            #Wenn Spieler stirbt bewegen sich die Gegner nicht mehr
+                            if game_state == GameStates.PLAYER_DEAD:
+                                break
+                    #Wenn Spieler stirbt bewegen sich die Gegner nicht mehr
+                    if game_state == GameStates.PLAYER_DEAD:
+                        break
 
             else:
                 game_state = GameStates.PLAYERS_TURN
