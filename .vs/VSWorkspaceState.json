@@ -1,8 +1,9 @@
 {
   "ExpandedNodes": [
     "",
+    "\\components",
     "\\map_objects"
   ],
-  "SelectedNode": "\\map_objects\\rectangle.py",
+  "SelectedNode": "\\components\\item.py",
   "PreviewInSolutionExplorer": false
 }

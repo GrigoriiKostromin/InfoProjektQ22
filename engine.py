@@ -5,9 +5,10 @@ from input_handlers import handle_keys
 from render_functions import clear_all, render_all, RenderOrder
 from map_objects.game_map import GameMap
 from components.fighter import Fighter
-from entity import Entity, get_blocking_entities_at_location
+from components.inventory import Inventory
 from death_functions import kill_monster, kill_player
-from game_messages import MessageLog
+from entity import Entity, get_blocking_entities_at_location
+from game_messages import Message, MessageLog
 
 
 def main():
@@ -40,6 +41,7 @@ def main():
     fov_radius = 10         #Sichtradius
 
     max_monsters_per_room = 3
+    max_items_per_room = 2
 
     #Farben der Karte (Styling)
     colors = {
@@ -55,7 +57,9 @@ def main():
     entities = [npc, player]"""
 
     fighter_component = Fighter(hp=30, defense=2, power=5) # fighter_component gibt den Spieler Werte, die nötig sind, um zu kämpfen
-    player = Entity(0, 0, '@', libtcod.white, 'Player', blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component) # Erzeugen eines Spieler aus der Entity Klasse 
+    inventory_component = Inventory(26) # Hier wird festgelegt, dass der Spieler 26 Plätze im Inventar hat
+    player = Entity(0, 0, '@', libtcod.white, 'Player', blocks=True, render_order=RenderOrder.ACTOR,
+                    fighter=fighter_component, inventory=inventory_component) # Erzeugen eines Spieler aus der Entity Klasse 
     entities = [player]
 
     #importieren von assests (bilder)
@@ -71,7 +75,7 @@ def main():
     
     #Karte wird erzeugt
     game_map = GameMap(map_width, map_height)
-    game_map.make_map(max_rooms, room_min_size, room_max_size, map_width, map_height, player, entities, max_monsters_per_room) # Es werden die Methoden in Gamemap gecalled mit den zufällig festgelegten Variablen
+    game_map.make_map(max_rooms, room_min_size, room_max_size, map_width, map_height, player, entities, max_monsters_per_room, max_items_per_room) # Es werden die Methoden in Gamemap gecalled mit den zufällig festgelegten Variablen
     
     #Wenn die Map generiert wird der Bereich, in dem man sehen kann "aktiviert"
     fov_recompute = True
@@ -88,6 +92,7 @@ def main():
     mouse = libtcod.Mouse()
 
     game_state = GameStates.PLAYERS_TURN
+    previous_game_state = game_state
 
     #Spielschleife. Schleife läuft bis Fenster geschlossen ist
     while not libtcod.console_is_window_closed():
@@ -100,7 +105,7 @@ def main():
 
         #Rednerfunktion wird gecalled
         render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, message_log, screen_width,
-                   screen_height, bar_width, panel_height, panel_y, mouse, colors)
+                   screen_height, bar_width, panel_height, panel_y, mouse, colors, game_state)
         
            
         fov_recompute = False
@@ -112,9 +117,13 @@ def main():
 
 
         #Es wir die Methode handle_keys aus input_handlers aufgerufen. An diese Methode wird die Inputvariable key weiter gegeben
-        action = handle_keys(key)
+        action = handle_keys(key, game_state)
         #Die einzelen Variablen aus input_handlers werden hier mit lokalen Variablen in Verbindung gesetzt
         move = action.get('move')
+        pickup = action.get('pickup')
+        show_inventory = action.get('show_inventory')
+        drop_inventory = action.get('drop_inventory')
+        inventory_index = action.get('inventory_index')
         exit = action.get('exit')
         fullscreen = action.get('fullscreen')
         fov_on = action.get('fov_on')
@@ -142,9 +151,40 @@ def main():
 
                 game_state = GameStates.ENEMY_TURN # JETZT ist der Gegner an der Reihe
          
+        elif pickup and game_state == GameStates.PLAYERS_TURN: # Sodass man nur aufheben kann wenn der Spieler an der Reihe ist
+            for entity in entities:
+                if entity.item and entity.x == player.x and entity.y == player.y: # Wenn die an der selben Stelle sind, dann:
+                    pickup_results = player.inventory.add_item(entity) # Hier die Methode abgerufen mit dem Item (entity) mit dem man interagiert
+                    player_turn_results.extend(pickup_results)
+
+                    break
+            else:
+                message_log.add_message(Message('There is nothing here to pick up.', libtcod.yellow))
+
+        if show_inventory:
+            previous_game_state = game_state
+            game_state = GameStates.SHOW_INVENTORY
+
+        if drop_inventory:
+            previous_game_state = game_state
+            game_state = GameStates.DROP_INVENTORY
+
+        if inventory_index is not None and previous_game_state != GameStates.PLAYER_DEAD and inventory_index < len(
+                player.inventory.items):
+            item = player.inventory.items[inventory_index]
+            if game_state == GameStates.SHOW_INVENTORY:
+                player_turn_results.extend(player.inventory.use(item)) # Hier wird dann die use methode gecalled, sodass auch das passiert, was passieren soll.
+            elif game_state == GameStates.DROP_INVENTORY:
+                player_turn_results.extend(player.inventory.drop_item(item))
+
+
+
         #Fenster schließen
         if exit:
-            return True
+            if game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY):
+                game_state = previous_game_state
+            else:
+                return True
 
 
 
@@ -156,6 +196,9 @@ def main():
         for player_turn_result in player_turn_results:
             message = player_turn_result.get('message')
             dead_entity = player_turn_result.get('dead')
+            item_added = player_turn_result.get('item_added')
+            item_consumed = player_turn_result.get('consumed')
+            item_dropped = player_turn_result.get('item_dropped')
 
             if message:
                 message_log.add_message(message)
@@ -169,6 +212,19 @@ def main():
                     message = kill_monster(dead_entity)
 
                 message_log.add_message(message)
+
+            if item_added:
+                entities.remove(item_added) # Hier wird das Item von der Map genommen was man aufgehoben hat.
+
+                game_state = GameStates.ENEMY_TURN
+
+            if item_consumed:
+                game_state = GameStates.ENEMY_TURN # das Konsumieren/verwenden eines Gegenstandes verbraucht den Zug des Spielers
+
+            if item_dropped:
+                entities.append(item_dropped)
+
+                game_state = GameStates.ENEMY_TURN
 
 
         if game_state == GameStates.ENEMY_TURN: # Hier werden die einzelnen Gegner durchgegangen und es wird geschaut was sie alle machen.

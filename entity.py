@@ -6,7 +6,7 @@ class Entity:
     #Ein allgemeines Objekt zur Darstellung von Spielern, Feinden, Gegenständen usw.
     # Das "= False" zeigt quasi an, dass ein Wert nicht unbedingt übergeben werden muss. Wenn nichts übergeben wird, wird es automatisch erstmal auf false gesetzt 
     # fighter und ai Komponenten sind optional, da Objekte auch Gegenstände darstellen können
-    def __init__(self, x, y, char, color, name, blocks=False, render_order=RenderOrder.CORPSE, fighter=None, ai=None):
+    def __init__(self, x, y, char, color, name, blocks=False, render_order=RenderOrder.CORPSE, fighter=None, ai=None, item=None, inventory=None):
         self.x = x
         self.y = y
         self.char = char
@@ -16,12 +16,20 @@ class Entity:
         self.render_order = render_order
         self.fighter = fighter
         self.ai = ai
+        self.item = item
+        self.inventory = inventory
 
         if self.fighter:
             self.fighter.owner = self
 
         if self.ai:
             self.ai.owner = self
+
+        if self.item:
+            self.item.owner = self
+
+        if self.inventory:
+            self.inventory.owner = self
 
     def move(self, dx, dy):
         #Bewege Objekt um eine bestimmte Menge

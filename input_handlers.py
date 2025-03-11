@@ -1,7 +1,20 @@
 import tcod as libtcod
 
+from game_states import GameStates
 
-def handle_keys(key):
+
+def handle_keys(key, game_state):
+    if game_state == GameStates.PLAYERS_TURN:
+        return handle_player_turn_keys(key)
+    elif game_state == GameStates.PLAYER_DEAD:
+        return handle_player_dead_keys(key)
+    elif game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY):
+        return handle_inventory_keys(key)
+
+    return {}
+
+
+def handle_player_turn_keys(key):
     key_char = chr(key.c)
     #Tasten zur Spielersteuerung. Hinter "move" sieht man, welche Koordiante veändert wird. Die erste Koordinate ist immer x
     """if key.vk == libtcod.KEY_UP:
@@ -31,6 +44,15 @@ def handle_keys(key):
     elif key_char == 'c':
         return {'move': (1, 1)}     # diagonal links hinten
 
+    if key_char == 'g':
+        return {'pickup': True}
+
+    elif key_char == 's':
+        return {'show_inventory': True}
+
+    elif key_char == 'l':
+        return {'drop_inventory': True}
+
     if key.vk == libtcod.KEY_F11:
         # F11: Bildschrimgröße maximal
         return {'fullscreen': True}
@@ -43,4 +65,36 @@ def handle_keys(key):
         return {'exit': True}
 
     # Keine Taste wurde gedrückt
+    return {}
+
+
+def handle_player_dead_keys(key):
+    key_char = chr(key.c)
+
+    if key_char == 'i':
+        return {'show_inventory': True}
+
+    if key.vk == libtcod.KEY_ENTER and key.lalt:
+        # Alt+Enter: toggle full screen
+        return {'fullscreen': True}
+    elif key.vk == libtcod.KEY_ESCAPE:
+        # Exit the menu
+        return {'exit': True}
+
+    return {}
+
+
+def handle_inventory_keys(key):
+    index = key.c - ord('a') # ord ist ein Weg um Tasteninputs in einen Index umzuwandeln. Also a ist beispielsweise 0 und b ist dann 1, usw. usw.
+
+    if index >= 0:
+        return {'inventory_index': index}
+
+    if key.vk == libtcod.KEY_ENTER and key.lalt:
+        # Alt+Enter: toggle full screen
+        return {'fullscreen': True}
+    elif key.vk == libtcod.KEY_ESCAPE:
+        # Exit the menu
+        return {'exit': True}
+
     return {}

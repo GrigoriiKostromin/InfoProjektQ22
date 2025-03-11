@@ -23,6 +23,12 @@ class Fighter:
 
         return results
 
+    def heal(self, amount): # amount um wv man sich heilt
+        self.hp += amount
+
+        if self.hp > self.max_hp: # Berechnung, falls man über max kommen würde, dann wird aufgefüllt und net drüber
+            self.hp = self.max_hp
+
     def attack(self, target):
 
         #Liste für Ergebnisse
