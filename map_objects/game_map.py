@@ -10,7 +10,7 @@ from components.item import Item
 
 from entity import Entity
 
-from item_functions import heal
+from item_functions import heal, cast_lightning
 
 from map_objects.rectangle import Rect
 from map_objects.tile import Tile
@@ -157,13 +157,23 @@ class GameMap:
         for i in range(number_of_items): # Hier der selbe Prozess wie bei dem platzieren von den Gegnern, hier nur mit den Gegenständen
             x = randint(room.x1 + 1, room.x2 - 1)
             y = randint(room.y1 + 1, room.y2 - 1)
+            
 
             if not any([entity for entity in entities if entity.x == x and entity.y == y]): # Wird platziert wenn keine bisher drin ist.
-                item_component = Item(use_function=heal, amount=4) # Wird zu Items hinzugefügt
-                item = Entity(x, y, '!', libtcod.violet, 'Heiltrank', render_order=RenderOrder.ITEM,
-                              item=item_component) # Hier bisher nur die Potion
+                item_chance = randint(0, 100)
 
-                entities.append(item)
+                if item_chance < 70:
+                    item_component = Item(use_function=heal, amount=4) # Wird zu Items hinzugefügt
+                    item = Entity(x, y, '!', libtcod.violet, 'Heiltrank', render_order=RenderOrder.ITEM,
+                                item=item_component) # Hier bisher nur die Potion
+                    entities.append(item)
+                elif item_chance < 30:
+                    item_component = Item(use_function=cast_lightning, damage=20, maximum_range=5)
+                    item = Entity(x, y, '#', libtcod.yellow, 'Blitzzauber', render_order=RenderOrder.ITEM,
+                                  item=item_component)
+                    entities.append(item)
+            
+                
 
     def is_blocked(self, x, y):
         if self.tiles[x][y].blocked:

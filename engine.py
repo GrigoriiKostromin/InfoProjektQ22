@@ -172,8 +172,10 @@ def main():
         if inventory_index is not None and previous_game_state != GameStates.PLAYER_DEAD and inventory_index < len(
                 player.inventory.items):
             item = player.inventory.items[inventory_index]
+
             if game_state == GameStates.SHOW_INVENTORY:
-                player_turn_results.extend(player.inventory.use(item)) # Hier wird dann die use methode gecalled, sodass auch das passiert, was passieren soll.
+                player_turn_results.extend(player.inventory.use(item, entities=entities, fov_map=fov_map)) # Hier wird dann die use methode gecalled, sodass auch das passiert, was mit dem Item passieren soll.
+
             elif game_state == GameStates.DROP_INVENTORY:
                 player_turn_results.extend(player.inventory.drop_item(item))
 
