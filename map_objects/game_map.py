@@ -149,7 +149,7 @@ class GameMap:
                     fighter_component = Fighter(hp=16, defense=1, power=4)#Kampfattribute, die mit der Entity Klasse in Verbindug stehen
                     ai_component = BasicMonster()   #AI, die "später" das autonome Bewegen der Gegner ermöglichen wird
 
-                    monster = monster = Entity(x, y, 'T', libtcod.darker_red, 'Troll', blocks=True, fighter=fighter_component,
+                    monster = monster = Entity(x, y, 'T', libtcod.darker_red, 'Ork', blocks=True, fighter=fighter_component,
                                      ai=ai_component) # Hier ein Troll. Ork bekommt eine AI und Kampfattribute
 
                 entities.append(monster)
@@ -160,7 +160,7 @@ class GameMap:
 
             if not any([entity for entity in entities if entity.x == x and entity.y == y]): # Wird platziert wenn keine bisher drin ist.
                 item_component = Item(use_function=heal, amount=4) # Wird zu Items hinzugefügt
-                item = Entity(x, y, '!', libtcod.violet, 'Healing Potion', render_order=RenderOrder.ITEM,
+                item = Entity(x, y, '!', libtcod.violet, 'Heiltrank', render_order=RenderOrder.ITEM,
                               item=item_component) # Hier bisher nur die Potion
 
                 entities.append(item)

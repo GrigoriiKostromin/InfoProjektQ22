@@ -10,12 +10,12 @@ def kill_player(player):
     player.color = libtcod.dark_red
 
     #Todesnachricht
-    return Message('You died!', libtcod.red), GameStates.PLAYER_DEAD
+    return Message('Ihr seid gestorben!', libtcod.red), GameStates.PLAYER_DEAD
 
 
 def kill_monster(monster):
     #Todesnachricht eines Monsters
-    death_message = Message('{0} is dead!'.format(monster.name.capitalize()), libtcod.orange)
+    death_message = Message('{0} wurde elemeniert!'.format(monster.name.capitalize()), libtcod.orange)
     
     #Wenn Monster stirbt, wird es durch ein Blutfleck ersetzt und es werden Attribute des Monsters entfernt, sodass es nicht mehr fähig ist anzugreifen etc.
     monster.char = '%'
@@ -23,7 +23,7 @@ def kill_monster(monster):
     monster.blocks = False
     monster.fighter = None
     monster.ai = None
-    monster.name = 'remains of ' + monster.name
+    monster.name = 'Ueberreste des ' + monster.name +"s"
     monster.render_order = RenderOrder.CORPSE #Renderreihenfolge wird geeändert, sobald ein Monter stirbt. Wenn nicht, dann ist das Monster über dem Spieler
 
     return death_message

@@ -58,7 +58,7 @@ def main():
 
     fighter_component = Fighter(hp=30, defense=2, power=5) # fighter_component gibt den Spieler Werte, die nötig sind, um zu kämpfen
     inventory_component = Inventory(26) # Hier wird festgelegt, dass der Spieler 26 Plätze im Inventar hat
-    player = Entity(0, 0, '@', libtcod.white, 'Player', blocks=True, render_order=RenderOrder.ACTOR,
+    player = Entity(0, 0, '@', libtcod.white, 'Spieler', blocks=True, render_order=RenderOrder.ACTOR,
                     fighter=fighter_component, inventory=inventory_component) # Erzeugen eines Spieler aus der Entity Klasse 
     entities = [player]
 
@@ -159,7 +159,7 @@ def main():
 
                     break
             else:
-                message_log.add_message(Message('There is nothing here to pick up.', libtcod.yellow))
+                message_log.add_message(Message('Es gibt nichts zum Aufheben.', libtcod.yellow))
 
         if show_inventory:
             previous_game_state = game_state

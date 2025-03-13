@@ -3,23 +3,23 @@ import tcod as libtcod
 from game_messages import Message
 
 
-class Inventory: # Hier werden später die Gegenstände im inventar gespeichert
+class Inventory: # Hier werden spï¿½ter die Gegenstï¿½nde im inventar gespeichert
     def __init__(self, capacity):
-        self.capacity = capacity # Maximale Anzahl an Gegenständen
-        self.items = [] # Hier wird die Liste dann gefüllt
+        self.capacity = capacity # Maximale Anzahl an Gegenstï¿½nden
+        self.items = [] # Hier wird die Liste dann gefï¿½llt
 
-    def add_item(self, item): # Ein Item zum Inventar hinzufügen
-        results = [] # Sodass mehrere Items gleichzeitig hinzugefügt werden können
+    def add_item(self, item): # Ein Item zum Inventar hinzufï¿½gen
+        results = [] # Sodass mehrere Items gleichzeitig hinzugefï¿½gt werden kï¿½nnen
 
-        if len(self.items) >= self.capacity: # Wenn man zu viele Sachen schon trägt
+        if len(self.items) >= self.capacity: # Wenn man zu viele Sachen schon trï¿½gt
             results.append({
-                'item_added': None, # Es wird nix hinzugefügt
-                'message': Message('You cannot carry any more, your inventory is full', libtcod.yellow)
+                'item_added': None, # Es wird nix hinzugefï¿½gt
+                'message': Message('Es kann nichts aufgehoben werden. Das Inventar ist voll.', libtcod.yellow)
             })
         else:
-            results.append({ # Hier wird dann ein Item zu der Liste hinzugefügt (bzw. gleich)
+            results.append({ # Hier wird dann ein Item zu der Liste hinzugefï¿½gt (bzw. gleich)
                 'item_added': item,
-                'message': Message('You pick up the {0}!'.format(item.name), libtcod.blue)
+                'message': Message('Es wurde {0} aufgehoben!'.format(item.name), libtcod.blue)
             })
 
             self.items.append(item) # Hier passiert das dann
@@ -32,10 +32,10 @@ class Inventory: # Hier werden später die Gegenstände im inventar gespeichert
         item_component = item_entity.item
 
         if item_component.use_function is None: # Wenn Items keine Funktion haben, dann passiert nichts und es wird folgende Nachricht ausgegeben
-            results.append({'message': Message('The {0} cannot be used'.format(item_entity.name), libtcod.yellow)})
+            results.append({'message': Message('{0} kann nicht benutzt werden'.format(item_entity.name), libtcod.yellow)})
         else:
             kwargs = {**item_component.function_kwargs, **kwargs}
-            item_use_results = item_component.use_function(self.owner, **kwargs) # Hier wird dann die Funktion vom Item gecalled, wenn man es konsumieren möchte
+            item_use_results = item_component.use_function(self.owner, **kwargs) # Hier wird dann die Funktion vom Item gecalled, wenn man es konsumieren mï¿½chte
 
             for item_use_result in item_use_results: 
                 if item_use_result.get('consumed'):
@@ -56,7 +56,7 @@ class Inventory: # Hier werden später die Gegenstände im inventar gespeichert
         item.y = self.owner.y
 
         self.remove_item(item)
-        results.append({'item_dropped': item, 'message': Message('You dropped the {0}'.format(item.name),
+        results.append({'item_dropped': item, 'message': Message('{0} wurde fallen gelassen'.format(item.name),
                                                                  libtcod.yellow)})
 
         return results

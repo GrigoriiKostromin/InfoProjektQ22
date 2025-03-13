@@ -10,9 +10,9 @@ def heal(*args, **kwargs):
     results = []
 
     if entity.fighter.hp == entity.fighter.max_hp: # Wenn man volle Leben hat, dann kann man sich offensichtlich nicht heilen
-        results.append({'consumed': False, 'message': Message('You are already at full health', libtcod.yellow)})
+        results.append({'consumed': False, 'message': Message('Du kannst dich nicht weiter heilen.', libtcod.yellow)})
     else:
         entity.fighter.heal(amount) # Hier wird die Heilungsmethode gecalled
-        results.append({'consumed': True, 'message': Message('Your wounds start to feel better!', libtcod.green)})
+        results.append({'consumed': True, 'message': Message('Deine Wunden wurden geheilt.', libtcod.green)})
 
     return results

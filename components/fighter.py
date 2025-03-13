@@ -39,12 +39,12 @@ class Fighter:
         #Liste wird erweitert
         if damage > 0:
             target.fighter.take_damage(damage)
-            results.append({'message': Message('{0} attacks {1} for {2} hit points.'.format(
+            results.append({'message': Message('{0} verursacht am {1} {2} Schaden.'.format(
                 self.owner.name.capitalize(), target.name, str(damage)), libtcod.white)})
 
             results.extend(target.fighter.take_damage(damage))
         else:
-            results.append({'message': Message('{0} attacks {1} but does no damage.'.format(
+            results.append({'message': Message('{0} attackiert {1} ,aber verursacht keinen Schaden.'.format(
                 self.owner.name.capitalize(), target.name), libtcod.white)})
 
 
