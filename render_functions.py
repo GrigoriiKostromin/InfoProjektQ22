@@ -21,7 +21,13 @@ def get_names_under_mouse(mouse, entities, fov_map):
              if entity.x == x and entity.y == y and libtcod.map_is_in_fov(fov_map, entity.x, entity.y)]
     names = ', '.join(names)
 
-    return names.capitalize()
+    hp = [entity.fighter.hp for entity in entities
+             if entity.fighter != None and entity.x == x and entity.y == y and libtcod.map_is_in_fov(fov_map, entity.x, entity.y)]
+    hp = ' '.join(str(hp))
+
+    info = names + hp
+
+    return info.capitalize()
 
 #Renderfunktion für die Lebensanzeige
 def render_bar(panel, x, y, total_width, name, value, maximum, bar_color, back_color):
