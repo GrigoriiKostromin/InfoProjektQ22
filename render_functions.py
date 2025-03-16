@@ -113,9 +113,9 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
 
     if game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY):
         if game_state == GameStates.SHOW_INVENTORY:
-            inventory_title = 'Um Gegenstaende zu benutzen, muss die Taste, die neben dem Gegenstand ist betaetigt werden oder drücke ESC um das Menue zu verlassen.\n'
+            inventory_title = 'Um Gegenstaende zu benutzen, muss die Taste, die neben dem Gegenstand ist betaetigt werden oder druecke ESC um das Menue zu verlassen.\n'
         else:
-            inventory_title = 'Um Gegenstaende zu benutzen, muss die Taste, die neben dem Gegenstand ist betaetigt werden oder drücke ESC um das Menue zu verlassen.\n'
+            inventory_title = 'Um Gegenstaende zu benutzen, muss die Taste, die neben dem Gegenstand ist betaetigt werden oder druecke ESC um das Menue zu verlassen.\n'
 
         inventory_menu(con, inventory_title, player.inventory, 50, screen_width, screen_height)
 

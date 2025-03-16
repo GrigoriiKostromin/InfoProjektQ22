@@ -71,7 +71,7 @@ def cast_fireball(*args, **kwargs):
         results.append({'consumed': False, 'message': Message('Kein Gegner ist in der Reichweite', libtcod.yellow)})
         return results
     #Log Nachricht, wenn der Zauber funktioniert
-    results.append({'consumed': True, 'message': Message('The fireball explodes, burning everything within {0} tiles!'.format(radius), libtcod.orange)})
+    results.append({'consumed': True, 'message': Message('Der Feuerball explodierte und zerstörte alles im Umkreis von {0} Kacheln!'.format(radius), libtcod.orange)})
 
     for entity in entities:
         if entity.distance(target_x, target_y) <= radius and entity.fighter:

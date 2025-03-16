@@ -16,6 +16,7 @@ def handle_keys(key, game_state):
     return {}
 
 
+
 def handle_player_turn_keys(key):
     key_char = chr(key.c)
     #Tasten zur Spielersteuerung. Hinter "move" sieht man, welche Koordiante veändert wird. Die erste Koordinate ist immer x
@@ -103,6 +104,18 @@ def handle_inventory_keys(key):
         return {'fullscreen': True}
     elif key.vk == libtcod.KEY_ESCAPE:
         # Exit the menu
+        return {'exit': True}
+
+    return {}
+
+def handle_main_menu(key): # Hier ganz einfach die Inputs für das Startmenü
+    key_char = chr(key.c)
+
+    if key_char == 'a':
+        return {'new_game': True}
+    elif key_char == 'b':
+        return {'load_game': True}
+    elif key_char == 'c' or  key.vk == libtcod.KEY_ESCAPE:
         return {'exit': True}
 
     return {}
