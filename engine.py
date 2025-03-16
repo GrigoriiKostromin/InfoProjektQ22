@@ -1,7 +1,7 @@
 import tcod as libtcod
 from fov_functions import initialize_fov, recompute_fov
 from game_states import GameStates
-from input_handlers import handle_keys
+from input_handlers import handle_keys, handle_mouse
 from render_functions import clear_all, render_all, RenderOrder
 from map_objects.game_map import GameMap
 from components.fighter import Fighter
@@ -56,7 +56,7 @@ def main():
     npc = Entity(int(screen_width / 2 - 5), int(screen_height / 2), '@', libtcod.red)
     entities = [npc, player]"""
 
-    fighter_component = Fighter(hp=30, defense=2, power=5) # fighter_component gibt den Spieler Werte, die nötig sind, um zu kämpfen
+    fighter_component = Fighter(hp=3000, defense=2, power=5) # fighter_component gibt den Spieler Werte, die nötig sind, um zu kämpfen
     inventory_component = Inventory(26) # Hier wird festgelegt, dass der Spieler 26 Plätze im Inventar hat
     player = Entity(0, 0, '@', libtcod.white, 'Spieler', blocks=True, render_order=RenderOrder.ACTOR,
                     fighter=fighter_component, inventory=inventory_component) # Erzeugen eines Spieler aus der Entity Klasse 
@@ -94,6 +94,9 @@ def main():
     game_state = GameStates.PLAYERS_TURN
     previous_game_state = game_state
 
+    #Das ist nötig um ein Ziel füt Items festzulegen. Default: es kein Ziel (nötig füt Zauber)
+    targeting_item = None
+
     #Spielschleife. Schleife läuft bis Fenster geschlossen ist
     while not libtcod.console_is_window_closed():
         #Input wird überprüft
@@ -118,6 +121,8 @@ def main():
 
         #Es wir die Methode handle_keys aus input_handlers aufgerufen. An diese Methode wird die Inputvariable key weiter gegeben
         action = handle_keys(key, game_state)
+        mouse_action = handle_mouse(mouse)
+        
         #Die einzelen Variablen aus input_handlers werden hier mit lokalen Variablen in Verbindung gesetzt
         move = action.get('move')
         pickup = action.get('pickup')
@@ -127,6 +132,11 @@ def main():
         exit = action.get('exit')
         fullscreen = action.get('fullscreen')
         fov_on = action.get('fov_on')
+
+        #Mausinput
+        
+        left_click = mouse_action.get('left_click')
+        right_click = mouse_action.get('right_click')
 
         #Eine Liste zum Speichern der Ergebnisse der Aktionen des Spielers während seines Zuges
         player_turn_results = []
@@ -161,10 +171,12 @@ def main():
             else:
                 message_log.add_message(Message('Es gibt nichts zum Aufheben.', libtcod.yellow))
 
+        #Inventar öffnen (benutzen)
         if show_inventory:
             previous_game_state = game_state
             game_state = GameStates.SHOW_INVENTORY
 
+        #Inventar öffnen (fallen lassen)
         if drop_inventory:
             previous_game_state = game_state
             game_state = GameStates.DROP_INVENTORY
@@ -179,12 +191,28 @@ def main():
             elif game_state == GameStates.DROP_INVENTORY:
                 player_turn_results.extend(player.inventory.drop_item(item))
 
+        #Hier wird das Ziel festgelegt
+        if game_state == GameStates.TARGETING:
+            #Mit Linksclick wird ein Ziel ausgewählt. Also deren x- und y-Koordinaten
+            if left_click:
+                target_x, target_y = left_click
+
+                #Item mit Target wird benutzt
+                item_use_results = player.inventory.use(targeting_item, entities=entities, fov_map=fov_map,
+                                                        target_x=target_x, target_y=target_y)
+                player_turn_results.extend(item_use_results)
+            #Wenn Rechtsklick, wird das Auswählen abgebrochen
+            elif right_click:
+                player_turn_results.append({'targeting_cancelled': True})
 
 
-        #Fenster schließen
+
+        #Fenster schließen, wenn es geöffnet war. Das Auswählen eines Zieles wird abgebrochen
         if exit:
             if game_state in (GameStates.SHOW_INVENTORY, GameStates.DROP_INVENTORY):
                 game_state = previous_game_state
+            elif game_state == GameStates.TARGETING:
+                player_turn_results.append({'targeting_cancelled': True})
             else:
                 return True
 
@@ -201,6 +229,8 @@ def main():
             item_added = player_turn_result.get('item_added')
             item_consumed = player_turn_result.get('consumed')
             item_dropped = player_turn_result.get('item_dropped')
+            targeting = player_turn_result.get('targeting')
+            targeting_cancelled = player_turn_result.get('targeting_cancelled')
 
             if message:
                 message_log.add_message(message)
@@ -223,10 +253,27 @@ def main():
             if item_consumed:
                 game_state = GameStates.ENEMY_TURN # das Konsumieren/verwenden eines Gegenstandes verbraucht den Zug des Spielers
 
+            #Item fallen lassen
             if item_dropped:
                 entities.append(item_dropped)
 
                 game_state = GameStates.ENEMY_TURN
+            
+
+            #Wen wir ein Item benutzen, welches ein Ziel braucht, gehen wir zum Spielerzug, damit sich das Inventar nicht nochmal öffnet
+            if targeting:
+                previous_game_state = GameStates.PLAYERS_TURN
+                game_state = GameStates.TARGETING
+                targeting_item = targeting
+                message_log.add_message(targeting_item.item.targeting_message)
+            
+            #Das Ziel wird abgebrochen
+            if targeting_cancelled:
+                game_state = previous_game_state
+
+                message_log.add_message(Message('Targeting cancelled'))
+
+            
 
 
         if game_state == GameStates.ENEMY_TURN: # Hier werden die einzelnen Gegner durchgegangen und es wird geschaut was sie alle machen.

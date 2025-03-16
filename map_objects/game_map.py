@@ -9,8 +9,8 @@ from components.fighter import Fighter
 from components.item import Item
 
 from entity import Entity
-
-from item_functions import heal, cast_lightning
+from game_messages import Message
+from item_functions import heal, cast_lightning, cast_fireball
 
 from map_objects.rectangle import Rect
 from map_objects.tile import Tile
@@ -167,7 +167,16 @@ class GameMap:
                     item = Entity(x, y, '!', libtcod.violet, 'Heiltrank', render_order=RenderOrder.ITEM,
                                 item=item_component) # Hier bisher nur die Potion
                     entities.append(item)
-                elif item_chance < 30:
+
+                elif item_chance < 85:
+                    item_component = Item(use_function=cast_fireball, targeting=True, targeting_message=Message(
+                        'Linksklicke die Kachel, auf welche der Feuerball landen soll. Rechtsklicke um den Zauber abzubrechen', libtcod.light_cyan),
+                                          damage=12, radius=2)
+                    item = Entity(x, y, '#', libtcod.red, 'Feuerballzauber', render_order=RenderOrder.ITEM,
+                                  item=item_component)
+                    entities.append(item)
+                
+                else:
                     item_component = Item(use_function=cast_lightning, damage=20, maximum_range=5)
                     item = Entity(x, y, '#', libtcod.yellow, 'Blitzzauber', render_order=RenderOrder.ITEM,
                                   item=item_component)

@@ -17,7 +17,7 @@ def heal(*args, **kwargs):
 
     return results
 
-#
+#Funktion für Blitzzauber. Der Blitzzauber schlägt auf den nächten Gegegner im Sichtfeld des Spielers ein.
 def cast_lightning(*args, **kwargs):
     caster = args[0]
     entities = kwargs.get('entities')
@@ -52,4 +52,30 @@ def cast_lightning(*args, **kwargs):
         results.append({'consumed': False, 'target': None, 'message': Message('Kein Gegner ist in der Reichweite', libtcod.red)})
 
    #Das Erbenis wird ausgegeben 
+    return results
+
+
+#Funktion für Feuerballzuaber
+def cast_fireball(*args, **kwargs):
+    entities = kwargs.get('entities')
+    fov_map = kwargs.get('fov_map')
+    damage = kwargs.get('damage')
+    radius = kwargs.get('radius')
+    target_x = kwargs.get('target_x')
+    target_y = kwargs.get('target_y')
+
+    results = []
+
+    #Wenn das Ziel nicht in der Reichweite ist, schlägt der Angriff fehl.
+    if not libtcod.map_is_in_fov(fov_map, target_x, target_y):
+        results.append({'consumed': False, 'message': Message('Kein Gegner ist in der Reichweite', libtcod.yellow)})
+        return results
+    #Log Nachricht, wenn der Zauber funktioniert
+    results.append({'consumed': True, 'message': Message('The fireball explodes, burning everything within {0} tiles!'.format(radius), libtcod.orange)})
+
+    for entity in entities:
+        if entity.distance(target_x, target_y) <= radius and entity.fighter:
+            results.append({'message': Message('{0} erleidet {1} Schaden durch Verbrennung.'.format(entity.name, damage), libtcod.orange)})
+            results.extend(entity.fighter.take_damage(damage))
+
     return results

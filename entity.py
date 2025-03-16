@@ -57,6 +57,10 @@ class Entity:
         return math.sqrt(dx ** 2 + dy ** 2) # Pythagoras, um die Länge des direkten Weges zu berechnen
     
 
+    def distance(self, x, y): #Distanz zu einem bestimmten Ziel
+        return math.sqrt((x - self.x) ** 2 + (y - self.y) ** 2)
+    
+
 
     def move_astar(self, target, entities, game_map):  #https://en.wikipedia.org/wiki/A*_search_algorithm
         # Erstellen Sie eine Sichtfeld-Karte, die die Abmessungen der Karte hat

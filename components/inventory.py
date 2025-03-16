@@ -34,14 +34,17 @@ class Inventory: # Hier werden sp�ter die Gegenst�nde im inventar gespeicher
         if item_component.use_function is None: # Wenn Items keine Funktion haben, dann passiert nichts und es wird folgende Nachricht ausgegeben
             results.append({'message': Message('{0} kann nicht benutzt werden'.format(item_entity.name), libtcod.yellow)})
         else:
-            kwargs = {**item_component.function_kwargs, **kwargs}
-            item_use_results = item_component.use_function(self.owner, **kwargs) # Hier wird dann die Funktion vom Item gecalled, wenn man es konsumieren m�chte
+            if item_component.targeting and not (kwargs.get('target_x') or kwargs.get('target_y')):# Hier wird dann die Funktion vom Item gecalled, wenn man es konsumieren m�chte und es ein Ziel für das Item gibt
+                results.append({'targeting': item_entity})
+            else:
+                kwargs = {**item_component.function_kwargs, **kwargs}
+                item_use_results = item_component.use_function(self.owner, **kwargs) # Hier wird dann die Funktion vom Item gecalled, wenn man es konsumieren m�chte und es kein Ziel für das Item gibt
 
-            for item_use_result in item_use_results: 
-                if item_use_result.get('consumed'):
-                    self.remove_item(item_entity) # Nach der Verwendung wird dann das Item aus dem Inventar entfernt
+                for item_use_result in item_use_results: 
+                    if item_use_result.get('consumed'):
+                        self.remove_item(item_entity) # Nach der Verwendung wird dann das Item aus dem Inventar entfernt
 
-            results.extend(item_use_results)
+                results.extend(item_use_results)
 
         return results
 
