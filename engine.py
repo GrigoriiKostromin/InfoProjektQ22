@@ -129,6 +129,7 @@ def main():
         show_inventory = action.get('show_inventory')
         drop_inventory = action.get('drop_inventory')
         inventory_index = action.get('inventory_index')
+        take_stairs = action.get('take_stairs')
         exit = action.get('exit')
         fullscreen = action.get('fullscreen')
         fov_on = action.get('fov_on')
@@ -190,6 +191,20 @@ def main():
 
             elif game_state == GameStates.DROP_INVENTORY:
                 player_turn_results.extend(player.inventory.drop_item(item))
+
+
+        if take_stairs and game_state == GameStates.PLAYERS_TURN:
+            for entity in entities:
+                #Wemm sich der Spieler über den Treppen befindet und enter drückt, wird eine neues lvl generiert
+                if entity.stairs and entity.x == player.x and entity.y == player.y:
+                    entities = game_map.next_floor(player, message_log, constants)
+                    fov_map = initialize_fov(game_map)
+                    fov_recompute = True
+                    libtcod.console_clear(con)
+
+                    break
+            else:
+                message_log.add_message(Message('There are no stairs here.', libtcod.yellow))
 
         #Hier wird das Ziel festgelegt
         if game_state == GameStates.TARGETING:

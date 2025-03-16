@@ -14,15 +14,16 @@ from item_functions import heal, cast_lightning, cast_fireball
 
 from map_objects.rectangle import Rect
 from map_objects.tile import Tile
+from components.stairs import Stairs
 
 class GameMap:
-    def __init__(self, width, height):
+    def __init__(self, width, height , dungeon_level=1):
         #Dimensionen des Levels aus engine.py
         self.width = width
         self.height = height
         #?
         self.tiles = self.initialize_tiles()
-
+        self.dungeon_level = dungeon_level
 
     def initialize_tiles(self):
         #Tiles ist Klasse, in welcher zusünde von Kacheln defeniert sind. Diese können hier später festgelegt werden
@@ -52,6 +53,10 @@ class GameMap:
 
         rooms = []
         num_rooms = 0
+        
+        #Die Koordinaten des am letzten genrierten Raumes
+        center_of_last_room_x = None
+        center_of_last_room_y = None
 
         for r in range(max_rooms):
             # Hier werden zufällige Werte für Werte für die Höhe und die Weite erstellt, die dann später in die Rect Funktion eingesetzt werden
@@ -77,13 +82,10 @@ class GameMap:
 
                 # Hier werden einfach die Koordinten vom Mittelpunkt des neuerstellten Raumes berechnet, um sie später für das "platzieren" des Spielers verwendet werden
                 (new_x, new_y) = new_room.center()
-                (new2_x, new2_y) = new_room.center()
+                center_of_last_room_x = new_x
+                center_of_last_room_y = new_y
                 
-                """
-                    
-                if num_rooms == 1:
-                    npc.x = new2_x
-                    npc.y = new2_y """
+                #erster Raum
                 if num_rooms == 0:
                     # Hier wird der Spieler im zuerst generierten Raum (num_rooms ist nur ganz am Anfang 0, direkt danach wird die Nummer immer +1 gemacht) platziert
                     player.x = new_x
@@ -109,6 +111,12 @@ class GameMap:
                 # num_rooms wird 1 zugefügt, weil wir jetzt zum nächsten Raum kommen und der gerade eben erstellte Raum wird der Liste hinzugefügt
                 rooms.append(new_room)
                 num_rooms += 1
+
+        #Es wird eine Treppe kreiert, welche ins mächte lvl führt
+        stairs_component = Stairs(self.dungeon_level + 1)
+        down_stairs = Entity(center_of_last_room_x, center_of_last_room_y, '>', libtcod.white, 'Stairs',
+                             render_order=RenderOrder.STAIRS, stairs=stairs_component)
+        entities.append(down_stairs)
 
     def create_room(self, room):  #Sorgt quasi dafür dass innerhalb von dem in Rect festgelegten Rechteck es für den Spieler begehbar ist und er es auch sehen kann
         for x in range(room.x1 + 1, room.x2): # Hier wird quasi jede einzelne Kachel ausgezählt und in die "liste" x dann eingesetzt
@@ -189,3 +197,20 @@ class GameMap:
             return True
 
         return False
+
+    def next_floor(self, player, message_log, constants):
+        self.dungeon_level += 1
+        entities = [player]
+        
+        #Wenn ein neues Dungen lvl erreicht wird, wird eine neue Map kreiert und das mit den selben Parametern wie die vorherige Map
+        self.tiles = self.initialize_tiles()
+        self.make_map(constants['max_rooms'], constants['room_min_size'], constants['room_max_size'],
+                      constants['map_width'], constants['map_height'], player, entities,
+                      constants['max_monsters_per_room'], constants['max_items_per_room'])
+
+        #Spieler wird um die hälfte seiner Leben geheilt
+        player.fighter.heal(player.fighter.max_hp // 2)
+        #Lognachricht
+        message_log.add_message(Message('You take a moment to rest, and recover your strength.', libtcod.light_violet))
+
+        return entities

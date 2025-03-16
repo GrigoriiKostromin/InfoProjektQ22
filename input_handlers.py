@@ -65,6 +65,10 @@ def handle_player_turn_keys(key):
     elif key.vk == libtcod.KEY_ESCAPE:
         # Spiel beenden
         return {'exit': True}
+    
+    #Dungeon lvl aufsteigen
+    elif key.vk == libtcod.KEY_ENTER:
+        return {'take_stairs': True}
 
     # Keine Taste wurde gedrückt
     return {}
