@@ -16,7 +16,7 @@ from render_functions import RenderOrder
 def get_constants(): # Hier die Daten die wir in Engine festlegten "ausgeklammert" in dieser Funktion
     window_title = 'Roguelike'
 
-    #Bildschirmgröße (im kleinen Zustand)
+    #Bildschirmgrï¿½ï¿½e (im kleinen Zustand)
     screen_width = 80
     screen_height = 50
 
@@ -25,23 +25,23 @@ def get_constants(): # Hier die Daten die wir in Engine festlegten "ausgeklammer
     panel_height = 7
     panel_y = screen_height - panel_height
 
-    #Log für die Nachrichten. Parameter
+    #Log fï¿½r die Nachrichten. Parameter
     message_x = bar_width + 2
     message_width = screen_width - bar_width - 2
     message_height = panel_height - 1
 
-    #größe der Karte/Levels
+    #grï¿½ï¿½e der Karte/Levels
     map_width = 80
     map_height = 43
 
-    # Variablen für bestimmte Raumtypen die erstellt werden
+    # Variablen fï¿½r bestimmte Raumtypen die erstellt werden
     room_max_size = 10
     room_min_size = 6
     max_rooms = 30
 
-    #Variablen für die begrenzte sicht 
+    #Variablen fï¿½r die begrenzte sicht 
     fov_algorithm = 0       #tcod Sichtfeld Algorithmus.
-    fov_light_walls = True  #Wenn der Parameter True ist, werden die Wände "beleuchtet"
+    fov_light_walls = True  #Wenn der Parameter True ist, werden die Wï¿½nde "beleuchtet"
     fov_radius = 10         #Sichtradius
 
     max_monsters_per_room = 3
@@ -81,8 +81,8 @@ def get_constants(): # Hier die Daten die wir in Engine festlegten "ausgeklammer
     return constants
 
 def get_game_variables(constants):
-    fighter_component = Fighter(hp=30, defense=2, power=5) # fighter_component gibt den Spieler Werte, die nötig sind, um zu kämpfen
-    inventory_component = Inventory(26) # Hier wird festgelegt, dass der Spieler 26 Plätze im Inventar hat
+    fighter_component = Fighter(hp=3000, defense=2, power=5) # fighter_component gibt den Spieler Werte, die nï¿½tig sind, um zu kï¿½mpfen
+    inventory_component = Inventory(26) # Hier wird festgelegt, dass der Spieler 26 Plï¿½tze im Inventar hat
     player = Entity(0, 0, '@', libtcod.white, 'Player', blocks=True, render_order=RenderOrder.ACTOR,
                     fighter=fighter_component, inventory=inventory_component) # Erzeugen eines Spieler aus der Entity Klasse 
     entities = [player]
@@ -90,7 +90,7 @@ def get_game_variables(constants):
     game_map = GameMap(constants['map_width'], constants['map_height'])
     game_map.make_map(constants['max_rooms'], constants['room_min_size'], constants['room_max_size'],
                       constants['map_width'], constants['map_height'], player, entities,
-                      constants['max_monsters_per_room'], constants['max_items_per_room']) # Es werden die Methoden in Gamemap gecalled mit den zufällig festgelegten Variablen
+                      constants['max_monsters_per_room'], constants['max_items_per_room']) # Es werden die Methoden in Gamemap gecalled mit den zufï¿½llig festgelegten Variablen
 
     message_log = MessageLog(constants['message_x'], constants['message_width'], constants['message_height'])
 
