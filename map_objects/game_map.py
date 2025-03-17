@@ -145,31 +145,46 @@ class GameMap:
             y = randint(room.y1 + 1, room.y2 - 1)
 
             if not any([entity for entity in entities if entity.x == x and entity.y == y]):
-                if randint(0, 100) < 80: # Es wird zu 80% ein Ork und zu 20% ein Troll
+                if randint(0, 100) < 60: # Es wird zu 80% ein Ork und zu 20% ein Troll
 
                     fighter_component = Fighter(hp=10, defense=0, power=3) #Kampfattribute, die mit der Entity Klasse in Verbindug stehen
                     ai_component = BasicMonster()   #AI, die "später" das autonome Bewegen der Gegner ermöglichen wird
 
                     monster = Entity(x, y, 'T', libtcod.darker_green, 'Troll', blocks=True, fighter=fighter_component,
                                      render_order=RenderOrder.ACTOR, ai=ai_component) # Quasi ein Ork. Ork bekommt eine AI und Kampfattribute
-                elif randint(0,100) < 10:
+                
+                elif randint(0,100) < 70 :
 
                     fighter_component = Fighter(hp=16, defense=1, power=4)#Kampfattribute, die mit der Entity Klasse in Verbindug stehen
                     ai_component = BasicMonster()   #AI, die "später" das autonome Bewegen der Gegner ermöglichen wird
 
                     monster = monster = Entity(x, y, 'T', libtcod.darker_red, 'Ork', blocks=True, fighter=fighter_component,
                                      ai=ai_component) # Hier ein Troll. Ork bekommt eine AI und Kampfattribute
+                    
+                elif randint(0,100)< 30 :
+                    fighter_component = Fighter(hp=0, defense=1, power=3)#Kampfattribute, die mit der Entity Klasse in Verbindug stehen
+                    ai_component = BasicMonster()   #AI, die "später" das autonome Bewegen der Gegner ermöglichen wird
 
+                    monster = monster = Entity(x, y, 'o', libtcod.black, "Spinne", blocks=True, fighter=fighter_component,
+                                        ai=ai_component) # Hier ein Troll. Ork bekommt eine AI und Kampfattribute
+                    
+                elif randint(0,100) < 20 :
 
-                else:
-
-                    fighter_component = Fighter(hp=20, defense=10, power=8)#Kampfattribute, die mit der Entity Klasse in Verbindug stehen
+                    fighter_component = Fighter(hp=50, defense=5, power=12)#Kampfattribute, die mit der Entity Klasse in Verbindug stehen
                     ai_component = BasicMonster()   #AI, die "später" das autonome Bewegen der Gegner ermöglichen wird
 
                     monster = monster = Entity(x, y, 'T', libtcod.darker_blue, 'Riese', blocks=True, fighter=fighter_component,
-                                     ai=ai_component) # Hier ein Troll. Ork bekommt eine AI und Kampfattribute
+                                     ai=ai_component) # Hier ein Troll. Ork bekommt eine AI und Kampfattribute   
                     
+                else:
+                    
+                        fighter_component = Fighter(hp=0, defense=1, power=3)#Kampfattribute, die mit der Entity Klasse in Verbindug stehen
+                        ai_component = BasicMonster()   #AI, die "später" das autonome Bewegen der Gegner ermöglichen wird
+
+                        monster = monster = Entity(x, y, 'o', libtcod.black, "Spinne", blocks=True, fighter=fighter_component,
+                                        ai=ai_component) # Hier ein Troll. Ork bekommt eine AI und Kampfattribute
                 
+
                 entities.append(monster)
 
         for i in range(number_of_items): # Hier der selbe Prozess wie bei dem platzieren von den Gegnern, hier nur mit den Gegenständen

@@ -12,17 +12,27 @@ class BasicMonster:
             
             
             
-            if monster.distance_to(target) >= 2 and monster.name !="Riese": # Näher herantreten, wenn zu weit weg ist.
+            if monster.distance_to(target) >= 2 and monster.name !="Riese" and monster.name !="Spinne": # Näher herantreten, wenn zu weit weg ist.
                 monster.move_astar(target, entities, game_map)#movestar Algorhitmus
                 
 
-            #Riese bewegt sich anders
+            #Riese bewegt sich jeden zweiten Zug
             elif monster.distance_to(target) >= 2 and turn_num_monster % 2  and monster.name =="Riese" :
                 monster.move_astar(target, entities, game_map)
 
+            elif monster.distance_to(target) >= 2 and monster.name =="Spinne" :
+                monster.move_astar(target, entities, game_map)
+                if monster.distance_to(target) > 1:
+                    monster.move_astar(target, entities, game_map)
+            
+
+            elif target.fighter.hp > 0 and monster.distance_to(target) <= 2 and monster.name =="Riese" and turn_num_monster % 2: 
+                attack_results = monster.fighter.attack(target)
+                results.extend(attack_results)
+            
 
             #Liste wird erweitert, wenn Schaden genommen wird
-            elif target.fighter.hp > 0 and monster.distance_to(target) <= 2: 
+            elif target.fighter.hp > 0 and monster.distance_to(target) <= 2 and monster.name !="Riese": 
                 attack_results = monster.fighter.attack(target)
                 results.extend(attack_results)
             print(turn_num_monster, "turn_num_monster")
