@@ -33,7 +33,7 @@ class Fighter:
 
         #Liste für Ergebnisse
         results = []
-
+       
         damage = self.power - target.fighter.defense
 
         #Liste wird erweitert

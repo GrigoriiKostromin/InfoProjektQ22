@@ -12,6 +12,7 @@ from game_messages import Message
 
 
 def main():
+    
     constants = get_constants() # Nutzt die Funktion in "initialize_new_game.py" um die ganzen Variablen zu laden
 
     #Position von Objekten, wie Spieler, Npcs, Items, etc
@@ -80,13 +81,13 @@ def main():
 
         else:
             libtcod.console_clear(con)
-            play_game(player, entities, game_map, message_log, game_state, con, panel, constants)
+            play_game(player, entities, game_map, message_log, game_state, con, panel, constants,turn_num_monster = 0)
 
             show_main_menu = True
     
 
 
-def play_game(player, entities, game_map, message_log, game_state, con, panel, constants): # Fast alles was zuvor in MAIN drin war
+def play_game(player, entities, game_map, message_log, game_state, con, panel, constants,turn_num_monster): # Fast alles was zuvor in MAIN drin war
     #Wenn die Map generiert wird der Bereich, in dem man sehen kann "aktiviert"
     fov_recompute = True
 
@@ -107,7 +108,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
     while not libtcod.console_is_window_closed():
         #Input wird überprüft
         libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS | libtcod.EVENT_MOUSE, key, mouse)
-
+        
         #Es werden Parameter 
         if fov_recompute:
             recompute_fov(fov_map, player.x, player.y, constants['fov_radius'], constants['fov_light_walls'],
@@ -302,13 +303,16 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
 
 
         if game_state == GameStates.ENEMY_TURN: # Hier werden die einzelnen Gegner durchgegangen und es wird geschaut was sie alle machen.
+            turn_num_monster+=1
             for entity in entities: 
                 if entity.ai: # Hierbei wird natürlich der Spieler ausgelassen.
                     #Die KI mit dem Spieler und der Umgebung interagieren lassen.
-                    enemy_turn_results = entity.ai.take_turn(player, fov_map, game_map, entities)
+                    
+                    enemy_turn_results = entity.ai.take_turn(player, fov_map, game_map, entities,turn_num_monster)
 
                     # Verarbeiten von der Ergebnisse der Aktionen des Feindes.
                     for enemy_turn_result in enemy_turn_results:
+                        
                         message = enemy_turn_result.get('message')
                         dead_entity = enemy_turn_result.get('dead')
 

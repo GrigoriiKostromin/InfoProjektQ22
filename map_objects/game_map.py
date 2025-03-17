@@ -152,7 +152,7 @@ class GameMap:
 
                     monster = Entity(x, y, 'T', libtcod.darker_green, 'Troll', blocks=True, fighter=fighter_component,
                                      render_order=RenderOrder.ACTOR, ai=ai_component) # Quasi ein Ork. Ork bekommt eine AI und Kampfattribute
-                else:
+                elif randint(0,100) < 10:
 
                     fighter_component = Fighter(hp=16, defense=1, power=4)#Kampfattribute, die mit der Entity Klasse in Verbindug stehen
                     ai_component = BasicMonster()   #AI, die "später" das autonome Bewegen der Gegner ermöglichen wird
@@ -160,6 +160,16 @@ class GameMap:
                     monster = monster = Entity(x, y, 'T', libtcod.darker_red, 'Ork', blocks=True, fighter=fighter_component,
                                      ai=ai_component) # Hier ein Troll. Ork bekommt eine AI und Kampfattribute
 
+
+                else:
+
+                    fighter_component = Fighter(hp=20, defense=10, power=8)#Kampfattribute, die mit der Entity Klasse in Verbindug stehen
+                    ai_component = BasicMonster()   #AI, die "später" das autonome Bewegen der Gegner ermöglichen wird
+
+                    monster = monster = Entity(x, y, 'T', libtcod.darker_blue, 'Riese', blocks=True, fighter=fighter_component,
+                                     ai=ai_component) # Hier ein Troll. Ork bekommt eine AI und Kampfattribute
+                    
+                
                 entities.append(monster)
 
         for i in range(number_of_items): # Hier der selbe Prozess wie bei dem platzieren von den Gegnern, hier nur mit den Gegenständen
@@ -174,7 +184,7 @@ class GameMap:
                     item_component = Item(use_function=heal, amount=4) # Wird zu Items hinzugefügt
                     item = Entity(x, y, '!', libtcod.violet, 'Heiltrank', render_order=RenderOrder.ITEM,
                                 item=item_component) # Hier bisher nur die Potion
-                    entities.append(item)
+                   
 
                 elif item_chance < 85:
                     item_component = Item(use_function=cast_fireball, targeting=True, targeting_message=Message(
@@ -182,13 +192,13 @@ class GameMap:
                                           damage=12, radius=2)
                     item = Entity(x, y, '#', libtcod.red, 'Feuerballzauber', render_order=RenderOrder.ITEM,
                                   item=item_component)
-                    entities.append(item)
+                    
                 
                 else:
                     item_component = Item(use_function=cast_lightning, damage=20, maximum_range=5)
                     item = Entity(x, y, '#', libtcod.yellow, 'Blitzzauber', render_order=RenderOrder.ITEM,
                                   item=item_component)
-                    entities.append(item)
+                entities.append(item)
             
                 
 
