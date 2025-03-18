@@ -16,6 +16,9 @@ from map_objects.rectangle import Rect
 from map_objects.tile import Tile
 from components.stairs import Stairs
 
+from random_utils import from_dungeon_level, random_choice_from_dict
+
+
 class GameMap:
     def __init__(self, width, height , dungeon_level=1):
         #Dimensionen des Levels aus engine.py
@@ -43,7 +46,7 @@ class GameMap:
 
         return tiles
    
-    def make_map(self, max_rooms, room_min_size, room_max_size, map_width, map_height, player, entities, max_monsters_per_room, max_items_per_room): # Zwei Räume und Tunnel testweise erstellen ||| Sonst so: def make_map(self, max_rooms, room_min_size, room_max_size, map_width, map_height, player, npc)
+    def make_map(self, max_rooms, room_min_size, room_max_size, map_width, map_height, player, entities): # Zwei Räume und Tunnel testweise erstellen ||| Sonst so: def make_map(self, max_rooms, room_min_size, room_max_size, map_width, map_height, player, npc)
         """room1 = Rect(20, 15, 10, 15)
         room2 = Rect(35, 15, 10, 15)
         # Hier wird ein Raum mithilfe der rect methode die wir in rectangle.py festgelegt haben erstellt
@@ -106,7 +109,7 @@ class GameMap:
                         self.create_v_tunnel(prev_y, new_y, prev_x)
                         self.create_h_tunnel(prev_x, new_x, new_y)
                 # Pro Raum wird immer VIELLEICHT ein Mob platziert
-                self.place_entities(new_room, entities, max_monsters_per_room, max_items_per_room) # Hier wird unsere Methode "Place Entities" gecalled, und die Werte übergeben. 
+                self.place_entities(new_room, entities) # Hier wird unsere Methode "Place Entities" gecalled, und die Werte übergeben. 
 
                 # num_rooms wird 1 zugefügt, weil wir jetzt zum nächsten Raum kommen und der gerade eben erstellte Raum wird der Liste hinzugefügt
                 rooms.append(new_room)
@@ -134,10 +137,27 @@ class GameMap:
             self.tiles[x][y].blocked = False
             self.tiles[x][y].block_sight = False
 
-    def place_entities(self, room, entities, max_monsters_per_room, max_items_per_room):
+    def place_entities(self, room, entities):
+        max_monsters_per_room = from_dungeon_level([[2, 1], [3, 4], [5, 6]], self.dungeon_level)
+        max_items_per_room = from_dungeon_level([[1, 1], [2, 4]], self.dungeon_level)
         # Hier wird eine zufällige Nummer generiert, wie viele Gegner auf der Karte auftauchen sollen
         number_of_monsters = randint(0, max_monsters_per_room)
         number_of_items = randint(0, max_items_per_room)
+
+        monster_chances = {'orc': 80, 'troll': 20} # Hier werden die Wahrscheinlichkeiten definiert
+        item_chances = {'healing_potion': 70, 'lightning_scroll': 10, 'fireball_scroll': 10, 'confusion_scroll': 10} # Hier für Items
+
+        monster_chances = {
+            'orc': 80,
+            'troll': from_dungeon_level([[15, 3], [30, 5], [60, 7]], self.dungeon_level)
+        }
+
+        item_chances = {
+            'healing_potion': 35,
+            'lightning_scroll': from_dungeon_level([[25, 4]], self.dungeon_level),
+            'fireball_scroll': from_dungeon_level([[25, 6]], self.dungeon_level),
+            'confusion_scroll': from_dungeon_level([[10, 2]], self.dungeon_level)
+        }
 
         for i in range(number_of_monsters):
             # Zufällige Koordinaten von einem Raum der erstellt wurde
@@ -145,16 +165,18 @@ class GameMap:
             y = randint(room.y1 + 1, room.y2 - 1)
 
             if not any([entity for entity in entities if entity.x == x and entity.y == y]):
-                if randint(0, 100) < 80: # Es wird zu 80% ein Ork und zu 20% ein Troll
+                monster_choice = random_choice_from_dict(monster_chances) 
 
-                    fighter_component = Fighter(hp=10, defense=0, power=3) #Kampfattribute, die mit der Entity Klasse in Verbindug stehen
+                if monster_choice == 'orc': # Es wird zu 80% ein Ork und zu 20% ein Troll
+
+                    fighter_component = Fighter(hp=20, defense=0, power=4) #Kampfattribute, die mit der Entity Klasse in Verbindug stehen
                     ai_component = BasicMonster()   #AI, die "später" das autonome Bewegen der Gegner ermöglichen wird
 
                     monster = Entity(x, y, 'T', libtcod.darker_green, 'Troll', blocks=True, fighter=fighter_component,
                                      render_order=RenderOrder.ACTOR, ai=ai_component) # Quasi ein Ork. Ork bekommt eine AI und Kampfattribute
                 else:
 
-                    fighter_component = Fighter(hp=16, defense=1, power=4)#Kampfattribute, die mit der Entity Klasse in Verbindug stehen
+                    fighter_component = Fighter(hp=30, defense=2, power=8)#Kampfattribute, die mit der Entity Klasse in Verbindug stehen
                     ai_component = BasicMonster()   #AI, die "später" das autonome Bewegen der Gegner ermöglichen wird
 
                     monster = monster = Entity(x, y, 'T', libtcod.darker_red, 'Ork', blocks=True, fighter=fighter_component,
@@ -168,24 +190,24 @@ class GameMap:
             
 
             if not any([entity for entity in entities if entity.x == x and entity.y == y]): # Wird platziert wenn keine bisher drin ist.
-                item_chance = randint(0, 100)
+                item_choice = random_choice_from_dict(item_chances)
 
-                if item_chance < 70:
-                    item_component = Item(use_function=heal, amount=4) # Wird zu Items hinzugefügt
+                if item_choice == 'healing_potion':
+                    item_component = Item(use_function=heal, amount=40) # Wird zu Items hinzugefügt
                     item = Entity(x, y, '!', libtcod.violet, 'Heiltrank', render_order=RenderOrder.ITEM,
                                 item=item_component) # Hier bisher nur die Potion
                     entities.append(item)
 
-                elif item_chance < 85:
+                elif item_choice == 'fireball_scroll':
                     item_component = Item(use_function=cast_fireball, targeting=True, targeting_message=Message(
                         'Linksklicke die Kachel, auf welche der Feuerball landen soll. Rechtsklicke um den Zauber abzubrechen', libtcod.light_cyan),
-                                          damage=12, radius=2)
+                                          damage=25, radius=3)
                     item = Entity(x, y, '#', libtcod.red, 'Feuerballzauber', render_order=RenderOrder.ITEM,
                                   item=item_component)
                     entities.append(item)
                 
                 else:
-                    item_component = Item(use_function=cast_lightning, damage=20, maximum_range=5)
+                    item_component = Item(use_function=cast_lightning, damage=40, maximum_range=5)
                     item = Entity(x, y, '#', libtcod.yellow, 'Blitzzauber', render_order=RenderOrder.ITEM,
                                   item=item_component)
                     entities.append(item)
@@ -205,12 +227,11 @@ class GameMap:
         #Wenn ein neues Dungen lvl erreicht wird, wird eine neue Map kreiert und das mit den selben Parametern wie die vorherige Map
         self.tiles = self.initialize_tiles()
         self.make_map(constants['max_rooms'], constants['room_min_size'], constants['room_max_size'],
-                      constants['map_width'], constants['map_height'], player, entities,
-                      constants['max_monsters_per_room'], constants['max_items_per_room'])
+                      constants['map_width'], constants['map_height'], player, entities)
 
         #Spieler wird um die hälfte seiner Leben geheilt
         player.fighter.heal(player.fighter.max_hp // 2)
         #Lognachricht
-        message_log.add_message(Message('You take a moment to rest, and recover your strength.', libtcod.light_violet))
+        message_log.add_message(Message('Du ruhst dich für einen Moment aus und erholst dich.', libtcod.light_violet))
 
         return entities
