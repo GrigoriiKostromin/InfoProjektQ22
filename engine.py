@@ -255,6 +255,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
             item_added = player_turn_result.get('item_added')
             item_consumed = player_turn_result.get('consumed')
             item_dropped = player_turn_result.get('item_dropped')
+            equip = player_turn_result.get('equip')
             targeting = player_turn_result.get('targeting')
             targeting_cancelled = player_turn_result.get('targeting_cancelled')
 
@@ -282,6 +283,22 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
             #Item fallen lassen
             if item_dropped:
                 entities.append(item_dropped)
+
+                game_state = GameStates.ENEMY_TURN
+
+            #Items ausrüsten
+            if equip:
+                equip_results = player.equipment.toggle_equip(equip)
+                #Ausrüsungsergebnisse werden anch Ausgerüstet und nicht Ausgerüstet untersucht. Dementsprechend wird eine Nachricht ausgegeben
+                for equip_result in equip_results:
+                    equipped = equip_result.get('equipped')
+                    dequipped = equip_result.get('dequipped')
+
+                    if equipped:
+                        message_log.add_message(Message('Du hast {0} ausgeruestet'.format(equipped.name)))
+
+                    if dequipped:
+                        message_log.add_message(Message('Du hast {0} abgelegt'.format(dequipped.name)))
 
                 game_state = GameStates.ENEMY_TURN
             

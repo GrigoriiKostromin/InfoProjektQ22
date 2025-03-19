@@ -126,7 +126,7 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
         else:
             inventory_title = 'Um Gegenstaende zu benutzen, muss die Taste, die neben dem Gegenstand ist betaetigt werden oder druecke ESC um das Menue zu verlassen.\n'
 
-        inventory_menu(con, inventory_title, player.inventory, 50, screen_width, screen_height)
+        inventory_menu(con, inventory_title, player, 50, screen_width, screen_height)
 
 # Alles, was gerendert wurde, wird gelöscht, um ein neues Bild zu rendern. Es wird immer bei einer Aktion vom Spieler ein neues Frame erzeugt 
 def clear_all(con, entities):

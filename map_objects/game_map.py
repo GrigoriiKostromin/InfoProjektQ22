@@ -7,6 +7,8 @@ from render_functions import RenderOrder
 from components.ai import BasicMonster
 from components.fighter import Fighter
 from components.item import Item
+from components.equipment import EquipmentSlots
+from components.equippable import Equippable
 
 from entity import Entity
 from game_messages import Message
@@ -20,7 +22,7 @@ from random_utils import from_dungeon_level, random_choice_from_dict
 
 
 class GameMap:
-    def __init__(self, width, height , dungeon_level=16):
+    def __init__(self, width, height , dungeon_level=1):
         #Dimensionen des Levels aus engine.py
         self.width = width
         self.height = height
@@ -145,21 +147,23 @@ class GameMap:
         number_of_items = randint(0, max_items_per_room)
 
         monster_chances = {'troll':70 , 'ork': 20, 'spinne': 15, 'riese': 5} # Hier werden die Wahrscheinlichkeiten definiert
-        item_chances = {'healing_potion': 70, 'lightning_scroll': 10, 'fireball_scroll': 10} # Hier für Items
+        item_chances = {'heiltrank': 70, 'blitzzauber': 10, 'feuerballzauber': 10} # Hier für Items
 
         #Eine Liste, in der die Wahrscheinlichkeiten im Bezug zum level geändert werden
         monster_chances = {
             'troll': 80,
             'ork': from_dungeon_level([[15, 3], [30, 5], [50, 7],[40, 13]], self.dungeon_level),
             'spinne': from_dungeon_level([[30, 2], [40, 5], [25, 9]], self.dungeon_level),
-            'riese': from_dungeon_level([[10, 5], [15, 7], [20, 9], [35, 13], [40, 17], [55, 19]], self.dungeon_level)
+            'riese': from_dungeon_level([[10, 5], [15, 7], [20, 9], [25, 13], [30, 17], [40, 19]], self.dungeon_level)
         }
         
         #Eine Liste, in der die Wahrscheinlichkeiten im Bezug zum level geändert werden
         item_chances = {
-            'healing_potion': 35,
-            'lightning_scroll': from_dungeon_level([[25, 4]], self.dungeon_level),
-            'fireball_scroll': from_dungeon_level([[25, 6]], self.dungeon_level),
+            'heiltrank': 35,
+            'blitzzauber': from_dungeon_level([[25, 4]], self.dungeon_level),
+            'feuerballzauber': from_dungeon_level([[25, 6]], self.dungeon_level),
+            'schwert': from_dungeon_level([[5, 4]], self.dungeon_level),
+            'schild': from_dungeon_level([[15, 8]], self.dungeon_level),
         }
 
         for i in range(number_of_monsters):
@@ -178,7 +182,7 @@ class GameMap:
                                      ai=ai_component) # Hier ein Troll. Ork bekommt eine AI und Kampfattribute
                     
                 elif monster_choice == 'riese':
-                    fighter_component = Fighter(hp=50, defense=5, power=25)#Kampfattribute, die mit der Entity Klasse in Verbindug stehen
+                    fighter_component = Fighter(hp=120, defense=5, power=25)#Kampfattribute, die mit der Entity Klasse in Verbindug stehen
                     ai_component = BasicMonster()   #AI, die "später" das autonome Bewegen der Gegner ermöglichen wird
 
                     monster = Entity(x, y, 'T', libtcod.darker_blue, 'Riese', blocks=True, fighter=fighter_component,
@@ -208,25 +212,34 @@ class GameMap:
 
             if not any([entity for entity in entities if entity.x == x and entity.y == y]): # Wird platziert wenn keine bisher drin ist.
                 item_choice = random_choice_from_dict(item_chances)
+                
 
-                if item_choice == 'healing_potion':
-                    item_component = Item(use_function=heal, amount=40) # Wird zu Items hinzugefügt
-                    item = Entity(x, y, '!', libtcod.violet, 'Heiltrank', render_order=RenderOrder.ITEM,
-                                item=item_component) # Hier bisher nur die Potion
+                if item_choice == 'blitzzauber':
+                    item_component = Item(use_function=cast_lightning, damage=300, maximum_range=5)
+                    item = Entity(x, y, '#', libtcod.yellow, 'Blitzzauber', render_order=RenderOrder.ITEM,
+                                  item=item_component)
+                    
                     entities.append(item)
 
-                elif item_choice == 'fireball_scroll':
+                elif item_choice == 'feuerballzauber':
                     item_component = Item(use_function=cast_fireball, targeting=True, targeting_message=Message(
                         'Linksklicke die Kachel, auf welche der Feuerball landen soll. Rechtsklicke um den Zauber abzubrechen', libtcod.light_cyan),
                                           damage=25, radius=3)
                     item = Entity(x, y, '#', libtcod.red, 'Feuerballzauber', render_order=RenderOrder.ITEM,
                                   item=item_component)
-                    
+                
+                elif item_choice == 'schwert':
+                    equippable_component = Equippable(EquipmentSlots.MAIN_HAND, power_bonus=3)
+                    item = Entity(x, y, '/', libtcod.sky, 'Schwert', equippable=equippable_component)
+
+                elif item_choice == 'schild':
+                    equippable_component = Equippable(EquipmentSlots.OFF_HAND, defense_bonus=1)
+                    item = Entity(x, y, '[', libtcod.darker_orange, 'Schild', equippable=equippable_component)
                 
                 else:
-                    item_component = Item(use_function=cast_lightning, damage=40, maximum_range=5)
-                    item = Entity(x, y, '#', libtcod.yellow, 'Blitzzauber', render_order=RenderOrder.ITEM,
-                                  item=item_component)
+                    item_component = Item(use_function=heal, amount=40) # Wird zu Items hinzugefügt
+                    item = Entity(x, y, '!', libtcod.violet, 'Heiltrank', render_order=RenderOrder.ITEM,
+                                item=item_component) # Hier bisher nur die Potion
                 entities.append(item)
             
                 

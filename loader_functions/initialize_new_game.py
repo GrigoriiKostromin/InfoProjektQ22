@@ -2,6 +2,8 @@ import tcod as libtcod
 
 from components.fighter import Fighter
 from components.inventory import Inventory
+from components.equipment import Equipment
+
 
 from entity import Entity
 
@@ -12,6 +14,8 @@ from game_states import GameStates
 from map_objects.game_map import GameMap
 
 from render_functions import RenderOrder
+
+
 
 def get_constants(): # Hier die Daten die wir in Engine festlegten "ausgeklammert" in dieser Funktion
     window_title = 'Roguelike'
@@ -80,11 +84,14 @@ def get_constants(): # Hier die Daten die wir in Engine festlegten "ausgeklammer
 
     return constants
 
+equipment_component = Equipment()
+
+
 def get_game_variables(constants):
     fighter_component = Fighter(hp=10000, defense=1, power=4) # fighter_component gibt den Spieler Werte, die n�tig sind, um zu k�mpfen
     inventory_component = Inventory(26) # Hier wird festgelegt, dass der Spieler 26 Pl�tze im Inventar hat
     player = Entity(0, 0, '@', libtcod.white, 'Player', blocks=True, render_order=RenderOrder.ACTOR,
-                    fighter=fighter_component, inventory=inventory_component) # Erzeugen eines Spieler aus der Entity Klasse 
+                    fighter=fighter_component, inventory=inventory_component, equipment=equipment_component) # Erzeugen eines Spieler aus der Entity Klasse 
     entities = [player]
 
     game_map = GameMap(constants['map_width'], constants['map_height'])

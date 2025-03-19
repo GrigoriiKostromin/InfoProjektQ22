@@ -1,12 +1,13 @@
 import math
 import tcod as libtcod
 from render_functions import RenderOrder
+from components.item import Item
 
 class Entity:
     #Ein allgemeines Objekt zur Darstellung von Spielern, Feinden, Gegenständen usw.
     # Das "= False" zeigt quasi an, dass ein Wert nicht unbedingt übergeben werden muss. Wenn nichts übergeben wird, wird es automatisch erstmal auf false gesetzt 
     # fighter und ai Komponenten sind optional, da Objekte auch Gegenstände darstellen können
-    def __init__(self, x, y, char, color, name, blocks=False, render_order=RenderOrder.CORPSE, fighter=None, ai=None, item=None, inventory=None, stairs=None):
+    def __init__(self, x, y, char, color, name, blocks=False, render_order=RenderOrder.CORPSE, fighter=None, ai=None, item=None, inventory=None, stairs=None, equipment=None, equippable=None):
         self.x = x
         self.y = y
         self.char = char
@@ -19,7 +20,10 @@ class Entity:
         self.item = item
         self.inventory = inventory
         self.stairs = stairs
+        self.equipment = equipment
+        self.equippable = equippable
 
+        #Untescheidung zwishen unterschiedlichen Entititäten. Nicht, dass ein Gegner versehentlich die Werte von einem anderen annimmt. Das gillt für alle Entititäten.
         if self.fighter:
             self.fighter.owner = self
 
@@ -34,6 +38,17 @@ class Entity:
 
         if self.stairs:
             self.stairs.owner = self
+
+        if self.equipment:
+            self.equipment.owner = self
+
+        if self.equippable:
+            self.equippable.owner = self
+
+            if not self.item:
+                item = Item()
+                self.item = item
+                self.item.owner = self
 
     def move(self, dx, dy):
         #Bewege Objekt um eine bestimmte Menge
@@ -71,6 +86,7 @@ class Entity:
         fov = libtcod.map_new(game_map.width, game_map.height)
 
         # Scanne die aktuelle Karte in jeder Runde und setze alle Wände als unbegehbar
+
         for y1 in range(game_map.height):
             for x1 in range(game_map.width):
                 libtcod.map_set_properties(fov, x1, y1, not game_map.tiles[x1][y1].block_sight,

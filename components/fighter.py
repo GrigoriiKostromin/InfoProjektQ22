@@ -1,15 +1,46 @@
 import tcod as libtcod
 
 from game_messages import Message
+from components.equipment import EquipmentSlots
+from components.equippable import Equippable
 
 class Fighter:
     #Klasse, mit dem man Entities das Kämpfen ermöglicht. Diese Klasse sorgt für eine Erweiterung der Entity Klasse. Ist aber nicht in die Entity Klasse implementiert, da es auch Objekte benötigt werden, welche keine "Kampfeigenschaften" besitzen sollten
     def __init__(self, hp, defense, power):
-        self.max_hp = hp
+        self.base_max_hp = hp
         self.hp = hp
-        self.defense = defense
-        self.power = power
-        
+        self.base_defense = defense
+        self.base_power = power
+    
+    #Wenn ein Item in einem belibeigen Slot ausgeüstet wird, kriegt der Spieler von dem Item die Boni, die im Item definiert sind
+    @property
+    def max_hp(self):
+        if self.owner and self.owner.equipment:
+            bonus = self.owner.equipment.max_hp_bonus
+        else:
+            bonus = 0
+
+        return self.base_max_hp + bonus
+
+    @property
+    def power(self):
+        if self.owner and self.owner.equipment:
+            bonus = self.owner.equipment.power_bonus
+        else:
+            bonus = 0
+
+        return self.base_power + bonus
+
+    @property
+    def defense(self):
+        if self.owner and self.owner.equipment:
+            bonus = self.owner.equipment.defense_bonus
+        else:
+            bonus = 0
+
+        return self.base_defense + bonus
+    
+
     #Funktion, um Schaden zu nehmen
     def take_damage(self, amount):
         #Liste für Ergebnisse

@@ -31,8 +31,13 @@ class Inventory: # Hier werden sp�ter die Gegenst�nde im inventar gespeicher
 
         item_component = item_entity.item
 
-        if item_component.use_function is None: # Wenn Items keine Funktion haben, dann passiert nichts und es wird folgende Nachricht ausgegeben
-            results.append({'message': Message('{0} kann nicht benutzt werden'.format(item_entity.name), libtcod.yellow)})
+        if item_component.use_function is None: # Wenn Items ausrüstbar sind, können die ausgerüstet werden
+            equippable_component = item_entity.equippable
+
+            if equippable_component:
+                results.append({'equip': item_entity})
+            else:
+                results.append({'message': Message('{0} kann nicht benutzt werden'.format(item_entity.name), libtcod.yellow)}) # Wenn Items keine Funktion haben, dann passiert nichts und es wird folgende Nachricht ausgegeben
         else:
             if item_component.targeting and not (kwargs.get('target_x') or kwargs.get('target_y')):# Hier wird dann die Funktion vom Item gecalled, wenn man es konsumieren m�chte und es ein Ziel für das Item gibt
                 results.append({'targeting': item_entity})
@@ -51,9 +56,13 @@ class Inventory: # Hier werden sp�ter die Gegenst�nde im inventar gespeicher
     def remove_item(self, item): # Funktion um das Item aus dem Inventar zu entfernen
         self.items.remove(item)
 
-
+    #Wenn das Item Fallengelassen wird, bekommt es eigene Koordinaten
     def drop_item(self, item):
         results = []
+
+        #Wenn ein Item ausgerüstet ist, wird es entfernt, wenn es fallengelassen wird
+        if self.owner.equipment.main_hand == item or self.owner.equipment.off_hand == item:
+            self.owner.equipment.toggle_equip(item)
 
         item.x = self.owner.x
         item.y = self.owner.y

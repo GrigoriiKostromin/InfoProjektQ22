@@ -4,11 +4,11 @@ import tcod as libtcod
 def menu(con, header, options, width, screen_width, screen_height): # Hier die Parameter, die man zum erstellen des screens braucht
     if len(options) > 26: raise ValueError('Du kannst nicht mehr als 26 Gegenstaende haben') # Dass man nicht mehr Items als 26 haben kann
 
-    # Hier wird die höhe der Kopfzeile ermittelt
+    # Hier wird die hï¿½he der Kopfzeile ermittelt
     header_height = libtcod.console_get_height_rect(con, 0, 0, width, screen_height, header) 
     height = len(options) + header_height
 
-    # Hier wird ein Fenster erstellt, die das Menü darstellt
+    # Hier wird ein Fenster erstellt, die das Menï¿½ darstellt
     window = libtcod.console_new(width, height)
 
     # Hier wird die Kopfzeile ausgegeben
@@ -29,16 +29,25 @@ def menu(con, header, options, width, screen_width, screen_height): # Hier die P
     y = int(screen_height / 2 - height / 2)
     libtcod.console_blit(window, 0, 0, width, height, 0, x, y, 1.0, 0.7)
 
-def inventory_menu(con, header, inventory, inventory_width, screen_width, screen_height):
-    # Hier wird ein Menü angezeigt, was die Items als Optionen auflistet
-    if len(inventory.items) == 0:
+def inventory_menu(con, header, player, inventory_width, screen_width, screen_height):
+    # Hier wird ein Menï¿½ angezeigt, was die Items als Optionen auflistet
+    if len(player.inventory.items) == 0:
         options = ['Inventar ist leer.']
     else:
-        options = [item.name for item in inventory.items]
+        options = []
+        #Wenn der Spieler etwas asurÃ¼stet, wird eingezigt, in welchen Slot der Gegenstand ausgerÃ¼sten wurde
+        for item in player.inventory.items:
+            if player.equipment.main_hand == item:
+                options.append('{0} (in der ersten Hand)'.format(item.name))
+            elif player.equipment.off_hand == item:
+                options.append('{0} (in der zweiten Hand)'.format(item.name))
+            else:
+                options.append(item.name)
+
 
     menu(con, header, options, inventory_width, screen_width, screen_height)
 
-def main_menu(con, background_image, screen_width, screen_height): # Wenn man daqs spiel startet, soll sich das öffnen
+def main_menu(con, background_image, screen_width, screen_height): # Wenn man daqs spiel startet, soll sich das ï¿½ffnen
     libtcod.image_blit_2x(background_image, 0, 0, 0)
 
     libtcod.console_set_default_foreground(0, libtcod.light_yellow)
@@ -48,6 +57,8 @@ def main_menu(con, background_image, screen_width, screen_height): # Wenn man da
                              'Von Greech und David')
 
     menu(con, '', ['Neues Spiel', 'Spiele weiter', 'Verlassen'], 24, screen_width, screen_height)
+
+
 
 def message_box(con, header, width, screen_width, screen_height):
     menu(con, header, [], width, screen_width, screen_height)
