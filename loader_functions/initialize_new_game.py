@@ -81,7 +81,7 @@ def get_constants(): # Hier die Daten die wir in Engine festlegten "ausgeklammer
     return constants
 
 def get_game_variables(constants):
-    fighter_component = Fighter(hp=100, defense=1, power=4) # fighter_component gibt den Spieler Werte, die n�tig sind, um zu k�mpfen
+    fighter_component = Fighter(hp=10000, defense=1, power=4) # fighter_component gibt den Spieler Werte, die n�tig sind, um zu k�mpfen
     inventory_component = Inventory(26) # Hier wird festgelegt, dass der Spieler 26 Pl�tze im Inventar hat
     player = Entity(0, 0, '@', libtcod.white, 'Player', blocks=True, render_order=RenderOrder.ACTOR,
                     fighter=fighter_component, inventory=inventory_component) # Erzeugen eines Spieler aus der Entity Klasse 
