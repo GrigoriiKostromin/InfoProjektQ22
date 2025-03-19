@@ -14,4 +14,4 @@ Benutze `pip install tcod`, um TCOD zu installieren.
 
 Um die Anwendung zu benutzen aktiviere das Terminal, bewege dich in den Ordner, starte engine.py mit `python engine.py`
 
-Generelles basic Tutorial: https://rogueliketutorials.com/tutorials/tcod/2019/
+Generelle tcod Information: https://python-tcod.readthedocs.io/en/latest/
