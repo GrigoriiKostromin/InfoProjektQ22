@@ -22,7 +22,7 @@ class Equipment:
         if self.armor and self.armor.equippable:
             bonus += self.armor.equippable.max_hp_bonus
         
-        if self.special_slot and self.off_hand.equippable:
+        if self.special_slot and self.special_slot.equippable:
             bonus += self.special_slot.equippable.max_hp_bonus
 
 
@@ -42,7 +42,7 @@ class Equipment:
         if self.armor and self.armor.equippable:
             bonus += self.armor.equippable.power_bonus
         
-        if self.special_slot and self.off_hand.equippable:
+        if self.special_slot and self.special_slot.equippable:
             bonus += self.special_slot.equippable.power_bonus
 
         return bonus
@@ -61,7 +61,7 @@ class Equipment:
         if self.armor and self.armor.equippable:
             bonus += self.armor.equippable.defense_bonus
         
-        if self.special_slot and self.off_hand.equippable:
+        if self.special_slot and self.special_slot.equippable:
             bonus += self.special_slot.equippable.defense_bonus
 
         return bonus
@@ -98,25 +98,25 @@ class Equipment:
                 results.append({'equipped': equippable_entity})
 
         elif slot == EquipmentSlots.ARMOR:
-            if self.off_hand == equippable_entity:
-                self.off_hand = None
+            if self.armor == equippable_entity:
+                self.armor = None
                 results.append({'dequipped': equippable_entity})
             else:
-                if self.off_hand:
-                    results.append({'dequipped': self.off_hand})
+                if self.armor:
+                    results.append({'dequipped': self.armor})
 
-                self.off_hand = equippable_entity
+                self.armor = equippable_entity
                 results.append({'equipped': equippable_entity})
         
         elif slot == EquipmentSlots.SPECIAL_SLOT:
-            if self.off_hand == equippable_entity:
-                self.off_hand = None
+            if self.special_slot == equippable_entity:
+                self.special_slot = None
                 results.append({'dequipped': equippable_entity})
             else:
-                if self.off_hand:
-                    results.append({'dequipped': self.off_hand})
+                if self.special_slot:
+                    results.append({'dequipped': self.special_slot})
 
-                self.off_hand = equippable_entity
+                self.special_slot = equippable_entity
                 results.append({'equipped': equippable_entity})
 
         return results

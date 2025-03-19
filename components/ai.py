@@ -35,6 +35,6 @@ class BasicMonster:
             elif target.fighter.hp > 0 and monster.distance_to(target) <= 2 and monster.name !="Riese": 
                 attack_results = monster.fighter.attack(target)
                 results.extend(attack_results)
-            print(turn_num_monster, "turn_num_monster")
+            
            
         return results

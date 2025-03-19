@@ -37,10 +37,15 @@ def inventory_menu(con, header, player, inventory_width, screen_width, screen_he
         options = []
         #Wenn der Spieler etwas asurüstet, wird eingezigt, in welchen Slot der Gegenstand ausgerüsten wurde
         for item in player.inventory.items:
+            
             if player.equipment.main_hand == item:
                 options.append('{0} (in der ersten Hand)'.format(item.name))
             elif player.equipment.off_hand == item:
                 options.append('{0} (in der zweiten Hand)'.format(item.name))
+            elif player.equipment.armor == item:
+                options.append('{0} (ist angezogen)'.format(item.name))
+            elif player.equipment.special_slot == item:
+                options.append('{0} (im Spezialslot)'.format(item.name))
             else:
                 options.append(item.name)
 

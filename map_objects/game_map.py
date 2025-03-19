@@ -22,13 +22,15 @@ from random_utils import from_dungeon_level, random_choice_from_dict
 
 
 class GameMap:
-    def __init__(self, width, height , dungeon_level=1):
+    def __init__(self, width, height , dungeon_level=2):
         #Dimensionen des Levels aus engine.py
         self.width = width
         self.height = height
         #?
         self.tiles = self.initialize_tiles()
         self.dungeon_level = dungeon_level
+        self.treasure_x = 0
+        self.treasure_y = 0
 
     def initialize_tiles(self):
         #Tiles ist Klasse, in welcher zusünde von Kacheln defeniert sind. Diese können hier später festgelegt werden
@@ -62,6 +64,9 @@ class GameMap:
         #Die Koordinaten des am letzten genrierten Raumes
         center_of_last_room_x = None
         center_of_last_room_y = None
+        
+        
+        
 
         for r in range(max_rooms):
             # Hier werden zufällige Werte für Werte für die Höhe und die Weite erstellt, die dann später in die Rect Funktion eingesetzt werden
@@ -84,17 +89,24 @@ class GameMap:
 
                 # Unser erstellter Raum wird mithilfe der create_room auf die Map gebracht
                 self.create_room(new_room)
-
                 # Hier werden einfach die Koordinten vom Mittelpunkt des neuerstellten Raumes berechnet, um sie später für das "platzieren" des Spielers verwendet werden
                 (new_x, new_y) = new_room.center()
                 center_of_last_room_x = new_x
                 center_of_last_room_y = new_y
                 
+                
+              
+                
+                    
                 #erster Raum
                 if num_rooms == 0:
                     # Hier wird der Spieler im zuerst generierten Raum (num_rooms ist nur ganz am Anfang 0, direkt danach wird die Nummer immer +1 gemacht) platziert
                     player.x = new_x
                     player.y = new_y
+                    
+                    
+                    
+                
                 else:
                     # Das gilt jetzt für alle Räume, die NICHT der erste sind. Hier werden jetzt die Räume mit den Tunneln verbunden (würde beim ersten keinen Sinnn ergeben, da der ja noch nichts hätte womit man ihn verbinden könnte)
 
@@ -110,6 +122,11 @@ class GameMap:
                         # Zuerst einen Vertikalen, dann einen Horizontalen
                         self.create_v_tunnel(prev_y, new_y, prev_x)
                         self.create_h_tunnel(prev_x, new_x, new_y)
+
+                #Schatzraum
+                if num_rooms == 1:
+                    self.treasure_x = new_x
+                    self.treasure_y = new_y
                 # Pro Raum wird immer VIELLEICHT ein Mob platziert
                 self.place_entities(new_room, entities) # Hier wird unsere Methode "Place Entities" gecalled, und die Werte übergeben. 
 
@@ -141,7 +158,7 @@ class GameMap:
 
     def place_entities(self, room, entities):
         max_monsters_per_room = from_dungeon_level([[2, 1], [3, 4], [5, 6], [7, 9], [11, 17]], self.dungeon_level)
-        max_items_per_room = from_dungeon_level([[1, 1], [2, 4]], self.dungeon_level)
+        max_items_per_room = from_dungeon_level([[1, 1], [2, 3], [3, 13]], self.dungeon_level)
         # Hier wird eine zufällige Nummer generiert, wie viele Gegner auf der Karte auftauchen sollen
         number_of_monsters = randint(0, max_monsters_per_room)
         number_of_items = randint(0, max_items_per_room)
@@ -160,11 +177,99 @@ class GameMap:
         #Eine Liste, in der die Wahrscheinlichkeiten im Bezug zum level geändert werden
         item_chances = {
             'heiltrank': 35,
-            'blitzzauber': from_dungeon_level([[25, 4]], self.dungeon_level),
+            'blitzzauber': from_dungeon_level([[15, 4]], self.dungeon_level),
             'feuerballzauber': from_dungeon_level([[25, 6]], self.dungeon_level),
-            'schwert': from_dungeon_level([[5, 4]], self.dungeon_level),
-            'schild': from_dungeon_level([[15, 8]], self.dungeon_level),
+            'dolch': from_dungeon_level([[20, 1], [2, 5]], self.dungeon_level),
+            'kurz_schwert': from_dungeon_level([[15, 4], [1, 11]], self.dungeon_level),
+            'lang_schwert': from_dungeon_level([[10, 8], [1, 15]], self.dungeon_level),
+            'gross_schwert': from_dungeon_level([[7, 14]], self.dungeon_level),
+            'rund_schild': from_dungeon_level([[10, 1], [1, 10]], self.dungeon_level),
+            'gross_schild': from_dungeon_level([[5, 10]], self.dungeon_level),
+            
+
+            
         }
+
+        treasure_chances = {
+            'ring_des_lebens_1': from_dungeon_level([[30, 1], [0, 9]], self.dungeon_level),
+            'ring_des_schutzes_1': from_dungeon_level([[30, 1], [0, 9]], self.dungeon_level),
+            'ring_des_schadens_1': from_dungeon_level([[30, 1,], [0, 9]], self.dungeon_level),
+            'ring_des_lebens_2': from_dungeon_level([[30, 9], [0, 15]], self.dungeon_level),
+            'ring_des_schutzes_2': from_dungeon_level([[30, 9], [0, 15]], self.dungeon_level),
+            'ring_des_schadens_2': from_dungeon_level([[30, 9], [0, 15]], self.dungeon_level),
+            'ring_des_lebens_3': from_dungeon_level([[31, 15]], self.dungeon_level),
+            'ring_des_schutzes_3': from_dungeon_level([[31, 15]], self.dungeon_level),
+            'ring_des_schadens_3': from_dungeon_level([[31, 15]], self.dungeon_level),
+            'leder_robe': from_dungeon_level([[10, 1], [0, 9]], self.dungeon_level),
+            'ketten_ruestung': from_dungeon_level([[10, 9], [0,15]], self.dungeon_level),
+            'ritter_ruestung': from_dungeon_level([[7, 15]], self.dungeon_level),
+
+
+        }
+        if not any([entity for entity in entities if entity.x == self.treasure_x and entity.y == self.treasure_y]):
+            treasure_choice = random_choice_from_dict(treasure_chances)
+                        
+                            
+            if treasure_choice == 'ring_des_lebens_1':
+                                equippable_component = Equippable(EquipmentSlots.SPECIAL_SLOT, max_hp_bonus=20)
+                                item = Entity(self.treasure_x, self.treasure_y, 'o', libtcod.violet, 'Ring des Lebens 1', equippable=equippable_component)
+                                entities.append(item)
+
+            elif treasure_choice == 'ring_des_schutzes_1':
+                                equippable_component = Equippable(EquipmentSlots.SPECIAL_SLOT, defense_bonus=2)
+                                item = Entity(self.treasure_x, self.treasure_y, 'o', libtcod.blue, 'Ring des Schutzes 1', equippable=equippable_component)
+                                entities.append(item)
+
+            elif treasure_choice == 'ring_des_schadens_1':
+                                equippable_component = Equippable(EquipmentSlots.SPECIAL_SLOT, power_bonus=2)
+                                item = Entity(self.treasure_x, self.treasure_y, 'o', libtcod.red, 'Ring des Schadens 1', equippable=equippable_component)
+                                entities.append(item)
+
+            elif treasure_choice == 'ring_des_lebens_2':
+                                equippable_component = Equippable(EquipmentSlots.SPECIAL_SLOT, max_hp_bonus=50)
+                                item = Entity(self.treasure_x, self.treasure_y, 'o', libtcod.violet, 'Ring des Lebens 2', equippable=equippable_component)
+                                entities.append(item)
+
+            elif treasure_choice == 'ring_des_schutzes_2':
+                                equippable_component = Equippable(EquipmentSlots.SPECIAL_SLOT, defense_bonus=4)
+                                item = Entity(self.treasure_x, self.treasure_y, 'o', libtcod.blue, 'Ring des Schutzes 2', equippable=equippable_component)
+                                entities.append(item)
+
+            elif treasure_choice == 'ring_des_schadens_2':
+                                equippable_component = Equippable(EquipmentSlots.SPECIAL_SLOT, power_bonus=6)
+                                item = Entity(self.treasure_x, self.treasure_y, 'o', libtcod.red, 'Ring des Schadens 2', equippable=equippable_component)
+                                entities.append(item)
+
+            elif treasure_choice == 'ring_des_lebens_3':
+                                equippable_component = Equippable(EquipmentSlots.SPECIAL_SLOT, max_hp_bonus=150)
+                                item = Entity(self.treasure_x, self.treasure_y, 'o', libtcod.violet, 'Ring des Lebens 3', equippable=equippable_component)
+                                entities.append(item)
+
+            elif treasure_choice == 'ring_des_schutzes_3':
+                                equippable_component = Equippable(EquipmentSlots.SPECIAL_SLOT, defense_bonus=7)
+                                item = Entity(self.treasure_x, self.treasure_y, 'o', libtcod.blue, 'Ring des Schutzes 3', equippable=equippable_component)
+                                entities.append(item)
+
+            elif treasure_choice == 'ring_des_schadens_3':
+                                equippable_component = Equippable(EquipmentSlots.SPECIAL_SLOT, power_bonus=15)
+                                item = Entity(self.treasure_x, self.treasure_y, 'o', libtcod.red, 'Ring des Schadens 3', equippable=equippable_component)
+                                entities.append(item)
+
+            elif treasure_choice == 'leder_robe':
+                                equippable_component = Equippable(EquipmentSlots.ARMOR, power_bonus=1, max_hp_bonus=10, defense_bonus=1)
+                                item = Entity(self.treasure_x, self.treasure_y, 'M', libtcod.darker_orange, 'Leder Robe', equippable=equippable_component)
+                                entities.append(item)
+
+            elif treasure_choice == 'ketten_ruestung':
+                                equippable_component = Equippable(EquipmentSlots.ARMOR, power_bonus=2, max_hp_bonus=20, defense_bonus=3)
+                                item = Entity(self.treasure_x, self.treasure_y, 'M', libtcod.darker_orange, 'Kettenruestung', equippable=equippable_component)
+                                entities.append(item)
+
+            elif treasure_choice == 'ritter_ruestung':
+                                equippable_component = Equippable(EquipmentSlots.ARMOR, power_bonus=5, max_hp_bonus=30, defense_bonus=5)
+                                item = Entity(self.treasure_x, self.treasure_y, 'M', libtcod.darker_orange, 'Ritterruestung', equippable=equippable_component)
+                                entities.append(item)
+        
 
         for i in range(number_of_monsters):
             # Zufällige Koordinaten von einem Raum der erstellt wurde
@@ -175,21 +280,21 @@ class GameMap:
                 monster_choice = random_choice_from_dict(monster_chances) 
 
                 if monster_choice == 'ork': 
-                    fighter_component = Fighter(hp=30, defense=2, power=8)#Kampfattribute, die mit der Entity Klasse in Verbindug stehen
+                    fighter_component = Fighter(hp=30, defense=1, power=15)#Kampfattribute, die mit der Entity Klasse in Verbindug stehen
                     ai_component = BasicMonster()   #AI, die "später" das autonome Bewegen der Gegner ermöglichen wird
 
                     monster = Entity(x, y, 'T', libtcod.darker_red, 'Ork', blocks=True, fighter=fighter_component,
                                      ai=ai_component) # Hier ein Troll. Ork bekommt eine AI und Kampfattribute
                     
                 elif monster_choice == 'riese':
-                    fighter_component = Fighter(hp=120, defense=5, power=25)#Kampfattribute, die mit der Entity Klasse in Verbindug stehen
+                    fighter_component = Fighter(hp=120, defense=5, power=50)#Kampfattribute, die mit der Entity Klasse in Verbindug stehen
                     ai_component = BasicMonster()   #AI, die "später" das autonome Bewegen der Gegner ermöglichen wird
 
                     monster = Entity(x, y, 'T', libtcod.darker_blue, 'Riese', blocks=True, fighter=fighter_component,
                                      ai=ai_component) # Hier ein Troll. Ork bekommt eine AI und Kampfattribute   
                     
                 elif monster_choice == 'spinne':
-                    fighter_component = Fighter(hp=1, defense=0, power=12)#Kampfattribute, die mit der Entity Klasse in Verbindug stehen
+                    fighter_component = Fighter(hp=1, defense=0, power=25)#Kampfattribute, die mit der Entity Klasse in Verbindug stehen
                     ai_component = BasicMonster()   #AI, die "später" das autonome Bewegen der Gegner ermöglichen wird
 
                     monster = Entity(x, y, 'o', libtcod.black, "Spinne", blocks=True, fighter=fighter_component,
@@ -197,7 +302,7 @@ class GameMap:
                     
                     
                 else:
-                    fighter_component = Fighter(hp=20, defense=0, power=4) #Kampfattribute, die mit der Entity Klasse in Verbindug stehen
+                    fighter_component = Fighter(hp=20, defense=0, power=6) #Kampfattribute, die mit der Entity Klasse in Verbindug stehen
                     ai_component = BasicMonster()   #AI, die "später" das autonome Bewegen der Gegner ermöglichen wird
 
                     monster = Entity(x, y, 'T', libtcod.darker_green, 'Troll', blocks=True, fighter=fighter_component,
@@ -215,11 +320,11 @@ class GameMap:
                 
 
                 if item_choice == 'blitzzauber':
-                    item_component = Item(use_function=cast_lightning, damage=300, maximum_range=5)
+                    item_component = Item(use_function=cast_lightning, damage=55, maximum_range=5)
                     item = Entity(x, y, '#', libtcod.yellow, 'Blitzzauber', render_order=RenderOrder.ITEM,
                                   item=item_component)
                     
-                    entities.append(item)
+                    
 
                 elif item_choice == 'feuerballzauber':
                     item_component = Item(use_function=cast_fireball, targeting=True, targeting_message=Message(
@@ -228,20 +333,35 @@ class GameMap:
                     item = Entity(x, y, '#', libtcod.red, 'Feuerballzauber', render_order=RenderOrder.ITEM,
                                   item=item_component)
                 
-                elif item_choice == 'schwert':
+                elif item_choice == 'dolch':
                     equippable_component = Equippable(EquipmentSlots.MAIN_HAND, power_bonus=3)
-                    item = Entity(x, y, '/', libtcod.sky, 'Schwert', equippable=equippable_component)
+                    item = Entity(x, y, '/', libtcod.darker_orange, 'Dolch', equippable=equippable_component)
 
-                elif item_choice == 'schild':
-                    equippable_component = Equippable(EquipmentSlots.OFF_HAND, defense_bonus=1)
-                    item = Entity(x, y, '[', libtcod.darker_orange, 'Schild', equippable=equippable_component)
+                elif item_choice == 'kurz_schwert':
+                    equippable_component = Equippable(EquipmentSlots.MAIN_HAND, power_bonus=6)
+                    item = Entity(x, y, '/', libtcod.darker_orange, 'Kurzschwert', equippable=equippable_component)
+
+                elif item_choice == 'lang_schwert':
+                    equippable_component = Equippable(EquipmentSlots.MAIN_HAND, power_bonus=12)
+                    item = Entity(x, y, '/', libtcod.darker_orange, 'Langschwert', equippable=equippable_component)
+
+                elif item_choice == 'gross_schwert':
+                    equippable_component = Equippable(EquipmentSlots.MAIN_HAND, power_bonus=29)
+                    item = Entity(x, y, '/', libtcod.darker_orange, 'Grossschwert', equippable=equippable_component)
+
+                elif item_choice == 'rund_schild':
+                    equippable_component = Equippable(EquipmentSlots.OFF_HAND, defense_bonus=2)
+                    item = Entity(x, y, '[', libtcod.darker_orange, 'Rundschild', equippable=equippable_component)
+                
+                elif item_choice == 'gros_schild':
+                    equippable_component = Equippable(EquipmentSlots.OFF_HAND, defense_bonus=4)
+                    item = Entity(x, y, '[', libtcod.darker_orange, 'Grossschild', equippable=equippable_component)
                 
                 else:
                     item_component = Item(use_function=heal, amount=40) # Wird zu Items hinzugefügt
                     item = Entity(x, y, '!', libtcod.violet, 'Heiltrank', render_order=RenderOrder.ITEM,
                                 item=item_component) # Hier bisher nur die Potion
                 entities.append(item)
-            
                 
 
     def is_blocked(self, x, y):
