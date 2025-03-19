@@ -1,5 +1,12 @@
 'player_index', (0, 5)
+<<<<<<< HEAD
 'entities', (512, 3499)
 'game_map', (4096, 92965)
 'message_log', (97280, 597)
 'game_state', (98304, 37)
+=======
+'entities', (512, 3618)
+'game_map', (4608, 65850)
+'message_log', (70656, 479)
+'game_state', (71168, 47)
+>>>>>>> 118c7147bf3761a7b8bde0208eab650f5a8a1507

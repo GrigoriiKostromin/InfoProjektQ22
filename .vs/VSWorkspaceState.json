@@ -2,8 +2,9 @@
   "ExpandedNodes": [
     "",
     "\\components",
+    "\\loader_functions",
     "\\map_objects"
   ],
-  "SelectedNode": "\\components\\fighter.py",
+  "SelectedNode": "\\components\\item.py",
   "PreviewInSolutionExplorer": false
 }

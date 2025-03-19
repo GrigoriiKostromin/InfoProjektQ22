@@ -81,7 +81,7 @@ def get_constants(): # Hier die Daten die wir in Engine festlegten "ausgeklammer
     return constants
 
 def get_game_variables(constants):
-    fighter_component = Fighter(hp=3000, defense=2, power=5) # fighter_component gibt den Spieler Werte, die n�tig sind, um zu k�mpfen
+    fighter_component = Fighter(hp=100, defense=1, power=4) # fighter_component gibt den Spieler Werte, die n�tig sind, um zu k�mpfen
     inventory_component = Inventory(26) # Hier wird festgelegt, dass der Spieler 26 Pl�tze im Inventar hat
     player = Entity(0, 0, '@', libtcod.white, 'Player', blocks=True, render_order=RenderOrder.ACTOR,
                     fighter=fighter_component, inventory=inventory_component) # Erzeugen eines Spieler aus der Entity Klasse 
@@ -89,8 +89,7 @@ def get_game_variables(constants):
 
     game_map = GameMap(constants['map_width'], constants['map_height'])
     game_map.make_map(constants['max_rooms'], constants['room_min_size'], constants['room_max_size'],
-                      constants['map_width'], constants['map_height'], player, entities,
-                      constants['max_monsters_per_room'], constants['max_items_per_room']) # Es werden die Methoden in Gamemap gecalled mit den zuf�llig festgelegten Variablen
+                      constants['map_width'], constants['map_height'], player, entities) # Es werden die Methoden in Gamemap gecalled mit den zuf�llig festgelegten Variablen
 
     message_log = MessageLog(constants['message_x'], constants['message_width'], constants['message_height'])
 
