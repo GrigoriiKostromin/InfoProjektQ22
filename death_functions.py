@@ -10,7 +10,7 @@ def kill_player(player):
     player.color = libtcod.dark_red
 
     #Todesnachricht
-    return Message('Ihr seid gestorben!', libtcod.red), GameStates.PLAYER_DEAD
+    return Message('Du bist gestorben! ESC ---> Hauptmenue', libtcod.red), GameStates.PLAYER_DEAD
 
 
 def kill_monster(monster):

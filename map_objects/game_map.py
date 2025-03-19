@@ -22,7 +22,7 @@ from random_utils import from_dungeon_level, random_choice_from_dict
 
 
 class GameMap:
-    def __init__(self, width, height , dungeon_level=2):
+    def __init__(self, width, height , dungeon_level=24):
         #Dimensionen des Levels aus engine.py
         self.width = width
         self.height = height
@@ -157,7 +157,7 @@ class GameMap:
             self.tiles[x][y].block_sight = False
 
     def place_entities(self, room, entities):
-        max_monsters_per_room = from_dungeon_level([[2, 1], [3, 4], [5, 6], [7, 9], [11, 17]], self.dungeon_level)
+        max_monsters_per_room = from_dungeon_level([[2, 1], [3, 4], [5, 9], [7, 13], [11, 20]], self.dungeon_level)
         max_items_per_room = from_dungeon_level([[1, 1], [2, 3], [3, 13]], self.dungeon_level)
         # Hier wird eine zufällige Nummer generiert, wie viele Gegner auf der Karte auftauchen sollen
         number_of_monsters = randint(0, max_monsters_per_room)
@@ -194,15 +194,15 @@ class GameMap:
             'ring_des_lebens_1': from_dungeon_level([[30, 1], [0, 9]], self.dungeon_level),
             'ring_des_schutzes_1': from_dungeon_level([[30, 1], [0, 9]], self.dungeon_level),
             'ring_des_schadens_1': from_dungeon_level([[30, 1,], [0, 9]], self.dungeon_level),
-            'ring_des_lebens_2': from_dungeon_level([[30, 9], [0, 15]], self.dungeon_level),
-            'ring_des_schutzes_2': from_dungeon_level([[30, 9], [0, 15]], self.dungeon_level),
-            'ring_des_schadens_2': from_dungeon_level([[30, 9], [0, 15]], self.dungeon_level),
-            'ring_des_lebens_3': from_dungeon_level([[31, 15]], self.dungeon_level),
-            'ring_des_schutzes_3': from_dungeon_level([[31, 15]], self.dungeon_level),
-            'ring_des_schadens_3': from_dungeon_level([[31, 15]], self.dungeon_level),
+            'ring_des_lebens_2': from_dungeon_level([[30, 9], [0, 17]], self.dungeon_level),
+            'ring_des_schutzes_2': from_dungeon_level([[30, 9], [0, 17]], self.dungeon_level),
+            'ring_des_schadens_2': from_dungeon_level([[30, 9], [0, 17]], self.dungeon_level),
+            'ring_des_lebens_3': from_dungeon_level([[31, 17]], self.dungeon_level),
+            'ring_des_schutzes_3': from_dungeon_level([[31, 17]], self.dungeon_level),
+            'ring_des_schadens_3': from_dungeon_level([[31, 17]], self.dungeon_level),
             'leder_robe': from_dungeon_level([[10, 1], [0, 9]], self.dungeon_level),
-            'ketten_ruestung': from_dungeon_level([[10, 9], [0,15]], self.dungeon_level),
-            'ritter_ruestung': from_dungeon_level([[7, 15]], self.dungeon_level),
+            'ketten_ruestung': from_dungeon_level([[10, 9], [0,17]], self.dungeon_level),
+            'ritter_ruestung': from_dungeon_level([[7, 17]], self.dungeon_level),
 
 
         }
@@ -236,12 +236,12 @@ class GameMap:
                                 entities.append(item)
 
             elif treasure_choice == 'ring_des_schadens_2':
-                                equippable_component = Equippable(EquipmentSlots.SPECIAL_SLOT, power_bonus=6)
+                                equippable_component = Equippable(EquipmentSlots.SPECIAL_SLOT, power_bonus)
                                 item = Entity(self.treasure_x, self.treasure_y, 'o', libtcod.red, 'Ring des Schadens 2', equippable=equippable_component)
                                 entities.append(item)
 
             elif treasure_choice == 'ring_des_lebens_3':
-                                equippable_component = Equippable(EquipmentSlots.SPECIAL_SLOT, max_hp_bonus=150)
+                                equippable_component = Equippable(EquipmentSlots.SPECIAL_SLOT, max_hp_bonus=200)
                                 item = Entity(self.treasure_x, self.treasure_y, 'o', libtcod.violet, 'Ring des Lebens 3', equippable=equippable_component)
                                 entities.append(item)
 
@@ -261,12 +261,12 @@ class GameMap:
                                 entities.append(item)
 
             elif treasure_choice == 'ketten_ruestung':
-                                equippable_component = Equippable(EquipmentSlots.ARMOR, power_bonus=2, max_hp_bonus=20, defense_bonus=3)
+                                equippable_component = Equippable(EquipmentSlots.ARMOR, power_bonus=2, max_hp_bonus=50, defense_bonus=5)
                                 item = Entity(self.treasure_x, self.treasure_y, 'M', libtcod.darker_orange, 'Kettenruestung', equippable=equippable_component)
                                 entities.append(item)
 
             elif treasure_choice == 'ritter_ruestung':
-                                equippable_component = Equippable(EquipmentSlots.ARMOR, power_bonus=5, max_hp_bonus=30, defense_bonus=5)
+                                equippable_component = Equippable(EquipmentSlots.ARMOR, power_bonus=20, max_hp_bonus=100, defense_bonus=20)
                                 item = Entity(self.treasure_x, self.treasure_y, 'M', libtcod.darker_orange, 'Ritterruestung', equippable=equippable_component)
                                 entities.append(item)
         
@@ -385,3 +385,10 @@ class GameMap:
         message_log.add_message(Message('Du ruhst dich für einen Moment aus und erholst dich.', libtcod.light_violet))
 
         return entities
+    
+    def game_end(self):
+        dungeon_level = self.dungeon_level
+        if dungeon_level == 25:
+            return True
+        else:
+            return False

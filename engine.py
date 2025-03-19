@@ -1,14 +1,15 @@
 import tcod as libtcod
 from fov_functions import initialize_fov, recompute_fov
 from game_states import GameStates
-from input_handlers import handle_keys, handle_mouse, handle_main_menu
+from input_handlers import handle_keys, handle_mouse, handle_main_menu, handle_end_menu
 from loader_functions.initialize_new_game import get_constants, get_game_variables
 from loader_functions.data_loaders import load_game, save_game
-from menus import main_menu, message_box
+from menus import main_menu, message_box, end_menu
 from render_functions import clear_all, render_all
 from death_functions import kill_monster, kill_player
 from entity import get_blocking_entities_at_location
 from game_messages import Message
+from map_objects.game_map import GameMap
 
 
 def main():
@@ -84,6 +85,7 @@ def main():
             play_game(player, entities, game_map, message_log, game_state, con, panel, constants,turn_num_monster = 0)
 
             show_main_menu = True
+        
     
 
 
@@ -106,6 +108,14 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
 
     #Spielschleife. Schleife läuft bis Fenster geschlossen ist
     while not libtcod.console_is_window_closed():
+
+        #Wann man das Level 25 erreicht ist das Spiel vorbei
+        if game_map.game_end() == True:
+                    break
+                        
+
+
+
         #Input wird überprüft
         libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS | libtcod.EVENT_MOUSE, key, mouse)
         
@@ -353,10 +363,76 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
                     #Wenn Spieler stirbt bewegen sich die Gegner nicht mehr
                     if game_state == GameStates.PLAYER_DEAD:
                         break
+                    
 
             else:
                 game_state = GameStates.PLAYERS_TURN
 
+
+#endmenü
+def end():
+    
+    constants = get_constants() # Nutzt die Funktion in "initialize_new_game.py" um die ganzen Variablen zu laden
+
+    #Position von Objekten, wie Spieler, Npcs, Items, etc
+    """player = Entity(int(screen_width / 2), int(screen_height / 2), '@', libtcod.white)     VIELLEICHT FÜR SPÄTER DAS??
+    npc = Entity(int(screen_width / 2 - 5), int(screen_height / 2), '@', libtcod.red)
+    entities = [npc, player]"""
+
+    #importieren von assests (bilder)
+    libtcod.console_set_custom_font('arial10x10.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
+    #Erzeugen eines Fensters
+    libtcod.console_init_root(constants['screen_width'], constants['screen_height'], constants['window_title'], False)
+
+
+    #erstellen einer Konsole
+    con = libtcod.console_new(constants['screen_width'], constants['screen_height'])
+    #Erstellen einer weitern Konsole
+    panel = libtcod.console_new(constants['screen_width'], constants['panel_height'])
+
+    player = None
+    entities = []
+    game_map = None
+    message_log = None
+    game_state = None
+
+    show_end_menu = True
+    
+
+    main_end_background_image = libtcod.image_load('menu_background.png') # Hintergrundbild laden (bisher Platzhalter)
+
+    key = libtcod.Key()
+    mouse = libtcod.Mouse()
+
+    while not libtcod.console_is_window_closed(): 
+        libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS | libtcod.EVENT_MOUSE, key, mouse)
+
+        if show_end_menu:
+            end_menu(con, main_end_background_image, constants['screen_width'], # Hier wird der Bildschirm erstellt
+                      constants['screen_height'])
+
+           
+            libtcod.console_flush()
+
+            action = handle_end_menu(key)
+
+            exit_game = action.get('exit')
+           
+            
+
+            
+            if exit_game:
+                break
+        
+        else:
+            libtcod.console_clear(con)
+            play_game(player, entities, game_map, message_log, game_state, con, panel, constants,turn_num_monster = 0)
+
+            show_end_menu = True
+        
+
+end()
+        
 #Es wird nur die main Funktion ausgeführt
 if __name__ == '__main__':
     main()

@@ -124,6 +124,14 @@ def handle_main_menu(key): # Hier ganz einfach die Inputs für das Startmenü
 
     return {}
 
+def handle_end_menu(key): # Hier ganz einfach die Inputs für das Startmenü
+    key_char = chr(key.c)
+
+    if key_char == 'a' or  key.vk == libtcod.KEY_ESCAPE:
+        return {'exit': True}
+
+    return {}
+
 #Funktion, um Mausinput zu triggern
 def handle_mouse(mouse):
     (x, y) = (mouse.cx, mouse.cy)

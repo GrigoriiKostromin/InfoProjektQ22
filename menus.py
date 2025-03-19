@@ -37,7 +37,7 @@ def inventory_menu(con, header, player, inventory_width, screen_width, screen_he
         options = []
         #Wenn der Spieler etwas asurüstet, wird eingezigt, in welchen Slot der Gegenstand ausgerüsten wurde
         for item in player.inventory.items:
-            
+
             if player.equipment.main_hand == item:
                 options.append('{0} (in der ersten Hand)'.format(item.name))
             elif player.equipment.off_hand == item:
@@ -67,3 +67,14 @@ def main_menu(con, background_image, screen_width, screen_height): # Wenn man da
 
 def message_box(con, header, width, screen_width, screen_height):
     menu(con, header, [], width, screen_width, screen_height)
+
+def end_menu(con, background_image, screen_width, screen_height): # Wenn man daqs spiel startet, soll sich das �ffnen
+    libtcod.image_blit_2x(background_image, 0, 0, 0)
+
+    libtcod.console_set_default_foreground(0, libtcod.light_yellow)
+    libtcod.console_print_ex(0, int(screen_width / 2), int(screen_height / 2) - 4, libtcod.BKGND_NONE, libtcod.CENTER, # Schriftzug 1
+                             'Du hast die Katakomben erfolgreich verlassen!')
+    
+
+    menu(con, '', ['Zum Hauptmenue'], 24, screen_width, screen_height)
+
