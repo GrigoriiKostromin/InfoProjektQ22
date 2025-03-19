@@ -111,6 +111,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
 
         #Wann man das Level 25 erreicht ist das Spiel vorbei
         if game_map.game_end() == True:
+                    end()
                     break
                         
 
@@ -431,7 +432,7 @@ def end():
             show_end_menu = True
         
 
-end()
+
         
 #Es wird nur die main Funktion ausgeführt
 if __name__ == '__main__':

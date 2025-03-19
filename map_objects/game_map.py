@@ -22,7 +22,7 @@ from random_utils import from_dungeon_level, random_choice_from_dict
 
 
 class GameMap:
-    def __init__(self, width, height , dungeon_level=24):
+    def __init__(self, width, height , dungeon_level=1):
         #Dimensionen des Levels aus engine.py
         self.width = width
         self.height = height
@@ -176,7 +176,8 @@ class GameMap:
         
         #Eine Liste, in der die Wahrscheinlichkeiten im Bezug zum level geändert werden
         item_chances = {
-            'heiltrank': 35,
+            'heiltrank': from_dungeon_level([[35, 1], [0, 11]], self.dungeon_level),
+            'grosser_heiltrank': from_dungeon_level([[35, 11]], self.dungeon_level),
             'blitzzauber': from_dungeon_level([[15, 4]], self.dungeon_level),
             'feuerballzauber': from_dungeon_level([[25, 6]], self.dungeon_level),
             'dolch': from_dungeon_level([[20, 1], [2, 5]], self.dungeon_level),
@@ -191,9 +192,9 @@ class GameMap:
         }
 
         treasure_chances = {
-            'ring_des_lebens_1': from_dungeon_level([[30, 1], [0, 9]], self.dungeon_level),
-            'ring_des_schutzes_1': from_dungeon_level([[30, 1], [0, 9]], self.dungeon_level),
-            'ring_des_schadens_1': from_dungeon_level([[30, 1,], [0, 9]], self.dungeon_level),
+            'ring_des_lebens_1': from_dungeon_level([[3, 1], [0, 9]], self.dungeon_level),
+            'ring_des_schutzes_1': from_dungeon_level([[3, 1], [0, 9]], self.dungeon_level),
+            'ring_des_schadens_1': from_dungeon_level([[3, 1,], [0, 9]], self.dungeon_level),
             'ring_des_lebens_2': from_dungeon_level([[30, 9], [0, 17]], self.dungeon_level),
             'ring_des_schutzes_2': from_dungeon_level([[30, 9], [0, 17]], self.dungeon_level),
             'ring_des_schadens_2': from_dungeon_level([[30, 9], [0, 17]], self.dungeon_level),
@@ -203,6 +204,7 @@ class GameMap:
             'leder_robe': from_dungeon_level([[10, 1], [0, 9]], self.dungeon_level),
             'ketten_ruestung': from_dungeon_level([[10, 9], [0,17]], self.dungeon_level),
             'ritter_ruestung': from_dungeon_level([[7, 17]], self.dungeon_level),
+            'der_ring_aus_den_legenden': from_dungeon_level([[1, 1]], self.dungeon_level),
 
 
         }
@@ -212,17 +214,17 @@ class GameMap:
                             
             if treasure_choice == 'ring_des_lebens_1':
                                 equippable_component = Equippable(EquipmentSlots.SPECIAL_SLOT, max_hp_bonus=20)
-                                item = Entity(self.treasure_x, self.treasure_y, 'o', libtcod.violet, 'Ring des Lebens 1', equippable=equippable_component)
+                                item = Entity(self.treasure_x, self.treasure_y, 'o', libtcod.violet, 'Ring des Lebens 1', '+20 Max HP', equippable=equippable_component,)
                                 entities.append(item)
 
             elif treasure_choice == 'ring_des_schutzes_1':
                                 equippable_component = Equippable(EquipmentSlots.SPECIAL_SLOT, defense_bonus=2)
-                                item = Entity(self.treasure_x, self.treasure_y, 'o', libtcod.blue, 'Ring des Schutzes 1', equippable=equippable_component)
+                                item = Entity(self.treasure_x, self.treasure_y, 'o', libtcod.blue, 'Ring des Schutzes 1','+20 Max HP',equippable=equippable_component)
                                 entities.append(item)
 
             elif treasure_choice == 'ring_des_schadens_1':
                                 equippable_component = Equippable(EquipmentSlots.SPECIAL_SLOT, power_bonus=2)
-                                item = Entity(self.treasure_x, self.treasure_y, 'o', libtcod.red, 'Ring des Schadens 1', equippable=equippable_component)
+                                item = Entity(self.treasure_x, self.treasure_y, 'o', libtcod.red, 'Ring des Schadens 1','+20 Max HP', equippable=equippable_component)
                                 entities.append(item)
 
             elif treasure_choice == 'ring_des_lebens_2':
@@ -236,7 +238,7 @@ class GameMap:
                                 entities.append(item)
 
             elif treasure_choice == 'ring_des_schadens_2':
-                                equippable_component = Equippable(EquipmentSlots.SPECIAL_SLOT, power_bonus)
+                                equippable_component = Equippable(EquipmentSlots.SPECIAL_SLOT, power_bonus=5)
                                 item = Entity(self.treasure_x, self.treasure_y, 'o', libtcod.red, 'Ring des Schadens 2', equippable=equippable_component)
                                 entities.append(item)
 
@@ -268,6 +270,11 @@ class GameMap:
             elif treasure_choice == 'ritter_ruestung':
                                 equippable_component = Equippable(EquipmentSlots.ARMOR, power_bonus=20, max_hp_bonus=100, defense_bonus=20)
                                 item = Entity(self.treasure_x, self.treasure_y, 'M', libtcod.darker_orange, 'Ritterruestung', equippable=equippable_component)
+                                entities.append(item)
+            
+            elif treasure_choice == 'der_ring_aus_den_legenden':
+                                equippable_component = Equippable(EquipmentSlots.ARMOR, power_bonus=300, max_hp_bonus=0, defense_bonus=-1)
+                                item = Entity(self.treasure_x, self.treasure_y, '+', libtcod.darker_yellow, 'Verfluchte Halskette', equippable=equippable_component)
                                 entities.append(item)
         
 
@@ -353,12 +360,17 @@ class GameMap:
                     equippable_component = Equippable(EquipmentSlots.OFF_HAND, defense_bonus=2)
                     item = Entity(x, y, '[', libtcod.darker_orange, 'Rundschild', equippable=equippable_component)
                 
-                elif item_choice == 'gros_schild':
+                elif item_choice == 'gross_schild':
                     equippable_component = Equippable(EquipmentSlots.OFF_HAND, defense_bonus=4)
                     item = Entity(x, y, '[', libtcod.darker_orange, 'Grossschild', equippable=equippable_component)
                 
+                elif item_choice == 'grosser_heiltrank':
+                    item_component = Item(use_function=heal, amount=100) # Wird zu Items hinzugefügt
+                    item = Entity(x, y, '!', libtcod.violet, 'Großer Heiltrank', render_order=RenderOrder.ITEM,
+                                item=item_component) # Hier bisher nur die Potion
+
                 else:
-                    item_component = Item(use_function=heal, amount=40) # Wird zu Items hinzugefügt
+                    item_component = Item(use_function=heal, amount=50) # Wird zu Items hinzugefügt
                     item = Entity(x, y, '!', libtcod.violet, 'Heiltrank', render_order=RenderOrder.ITEM,
                                 item=item_component) # Hier bisher nur die Potion
                 entities.append(item)
