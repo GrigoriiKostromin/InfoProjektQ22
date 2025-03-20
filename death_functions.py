@@ -8,6 +8,7 @@ def kill_player(player):
     #Zeichen des Spielers wird zu einem rotem Prozentzeichen. Soll Blut darstellen
     player.char = '%'
     player.color = libtcod.dark_red
+    is_dead = True
 
     #Todesnachricht
     return Message('Du bist gestorben! ESC ---> Hauptmenue', libtcod.red), GameStates.PLAYER_DEAD

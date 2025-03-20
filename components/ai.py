@@ -22,8 +22,7 @@ class BasicMonster:
 
             elif monster.distance_to(target) >= 2 and monster.name =="Spinne" :
                 monster.move_astar(target, entities, game_map)
-                if monster.distance_to(target) > 1:
-                    monster.move_astar(target, entities, game_map)
+                
             
 
             elif target.fighter.hp > 0 and monster.distance_to(target) <= 2 and monster.name =="Riese" and turn_num_monster % 2: 

@@ -3,7 +3,7 @@ import tcod as libtcod
 from components.fighter import Fighter
 from components.inventory import Inventory
 from components.equipment import Equipment
-
+from components.equippable import Equippable
 
 from entity import Entity
 
@@ -14,7 +14,7 @@ from game_states import GameStates
 from map_objects.game_map import GameMap
 
 from render_functions import RenderOrder
-
+from equipment_slots import EquipmentSlots
 
 
 def get_constants(): # Hier die Daten die wir in Engine festlegten "ausgeklammert" in dieser Funktion
@@ -86,13 +86,44 @@ def get_constants(): # Hier die Daten die wir in Engine festlegten "ausgeklammer
 
 equipment_component = Equipment()
 
-
+hp = 150
+defense = 0
+power = 2
 def get_game_variables(constants):
-    fighter_component = Fighter(hp=15000, defense=1, power=4) # fighter_component gibt den Spieler Werte, die n�tig sind, um zu k�mpfen
+    fighter_component = Fighter(hp, defense, power) # fighter_component gibt den Spieler Werte, die n�tig sind, um zu k�mpfen
     inventory_component = Inventory(26) # Hier wird festgelegt, dass der Spieler 26 Pl�tze im Inventar hat
     player = Entity(0, 0, '@', libtcod.white, 'Player', blocks=True, render_order=RenderOrder.ACTOR,
                     fighter=fighter_component, inventory=inventory_component, equipment=equipment_component) # Erzeugen eines Spieler aus der Entity Klasse 
     entities = [player]
+
+    equippable_component = Equippable(EquipmentSlots.MAIN_HAND, max_hp_bonus=0, power_bonus=1, defense_bonus=0)
+    stick = Entity(0, 0, '/', libtcod.dark_orange, 'Stock', equippable=equippable_component)
+    player.inventory.add_item(stick)
+    player.equipment.toggle_equip(stick)
+
+    equippable_component = Equippable(EquipmentSlots.OFF_HAND, max_hp_bonus=0, power_bonus=0, defense_bonus=0)
+    fassdeckel = Entity(0, 0, '[', libtcod.dark_orange, 'Fassdeckel', equippable=equippable_component)
+    player.inventory.add_item(fassdeckel)
+    player.equipment.toggle_equip(fassdeckel)
+
+    equippable_component = Equippable(EquipmentSlots.SPECIAL_SLOT, max_hp_bonus=0, power_bonus=0, defense_bonus=0)
+    norm_ring = Entity(0, 0, 'o', libtcod.grey, 'Gewöhnlicher Ring', equippable=equippable_component)
+    player.inventory.add_item(norm_ring)
+    player.equipment.toggle_equip(norm_ring)
+
+    equippable_component = Equippable(EquipmentSlots.ARMOR, max_hp_bonus=10, power_bonus=0, defense_bonus=0)
+    gewandt = Entity(0, 0, 'M', libtcod.dark_orange, 'Seidegewandt', equippable=equippable_component)
+    player.inventory.add_item(gewandt)
+    player.equipment.toggle_equip(gewandt)
+
+
+
+    
+
+
+    
+
+   
 
     game_map = GameMap(constants['map_width'], constants['map_height'])
     game_map.make_map(constants['max_rooms'], constants['room_min_size'], constants['room_max_size'],

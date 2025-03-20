@@ -1,4 +1,6 @@
 from equipment_slots import EquipmentSlots
+from game_states import GameStates
+from death_functions import kill_player
 
 #Klasse, in der die Ausrüstung erstellt wird
 class Equipment:
@@ -118,5 +120,7 @@ class Equipment:
 
                 self.special_slot = equippable_entity
                 results.append({'equipped': equippable_entity})
+
+       
 
         return results

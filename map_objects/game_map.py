@@ -192,16 +192,16 @@ class GameMap:
         }
 
         treasure_chances = {
-            'ring_des_lebens_1': from_dungeon_level([[30, 1], [0, 9]], self.dungeon_level),
-            'ring_des_schutzes_1': from_dungeon_level([[30, 1], [0, 9]], self.dungeon_level),
-            'ring_des_schadens_1': from_dungeon_level([[30, 1,], [0, 9]], self.dungeon_level),
+            'ring_des_lebens_1': from_dungeon_level([[3, 1], [0, 9]], self.dungeon_level),
+            'ring_des_schutzes_1': from_dungeon_level([[3, 1], [0, 9]], self.dungeon_level),
+            'ring_des_schadens_1': from_dungeon_level([[3, 1,], [0, 9]], self.dungeon_level),
             'ring_des_lebens_2': from_dungeon_level([[30, 9], [0, 17]], self.dungeon_level),
             'ring_des_schutzes_2': from_dungeon_level([[30, 9], [0, 17]], self.dungeon_level),
             'ring_des_schadens_2': from_dungeon_level([[30, 9], [0, 17]], self.dungeon_level),
             'ring_des_lebens_3': from_dungeon_level([[31, 17]], self.dungeon_level),
             'ring_des_schutzes_3': from_dungeon_level([[31, 17]], self.dungeon_level),
             'ring_des_schadens_3': from_dungeon_level([[31, 17]], self.dungeon_level),
-            'leder_robe': from_dungeon_level([[10, 1], [0, 9]], self.dungeon_level),
+            'leder_robe': from_dungeon_level([[90, 1], [0, 9]], self.dungeon_level),
             'ketten_ruestung': from_dungeon_level([[10, 9], [0,17]], self.dungeon_level),
             'ritter_ruestung': from_dungeon_level([[7, 17]], self.dungeon_level),
             'der_ring_aus_den_legenden': from_dungeon_level([[1, 1]], self.dungeon_level),

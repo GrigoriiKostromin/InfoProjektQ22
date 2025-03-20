@@ -365,8 +365,9 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
                             #Wenn Spieler stirbt bewegen sich die Gegner nicht mehr
                             if game_state == GameStates.PLAYER_DEAD:
                                 break
+
                     #Wenn Spieler stirbt bewegen sich die Gegner nicht mehr
-                    if game_state == GameStates.PLAYER_DEAD:
+                    if game_state == GameStates.PLAYER_DEAD:       
                         break
                     
 
