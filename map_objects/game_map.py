@@ -192,27 +192,46 @@ class GameMap:
         }
 
         treasure_chances = {
-            'ring_des_lebens_1': from_dungeon_level([[3, 1], [0, 9]], self.dungeon_level),
-            'ring_des_schutzes_1': from_dungeon_level([[3, 1], [0, 9]], self.dungeon_level),
-            'ring_des_schadens_1': from_dungeon_level([[3, 1,], [0, 9]], self.dungeon_level),
-            'ring_des_lebens_2': from_dungeon_level([[30, 9], [0, 17]], self.dungeon_level),
-            'ring_des_schutzes_2': from_dungeon_level([[30, 9], [0, 17]], self.dungeon_level),
-            'ring_des_schadens_2': from_dungeon_level([[30, 9], [0, 17]], self.dungeon_level),
-            'ring_des_lebens_3': from_dungeon_level([[31, 17]], self.dungeon_level),
-            'ring_des_schutzes_3': from_dungeon_level([[31, 17]], self.dungeon_level),
-            'ring_des_schadens_3': from_dungeon_level([[31, 17]], self.dungeon_level),
-            'leder_robe': from_dungeon_level([[90, 1], [0, 9]], self.dungeon_level),
-            'ketten_ruestung': from_dungeon_level([[10, 9], [0,17]], self.dungeon_level),
-            'ritter_ruestung': from_dungeon_level([[7, 17]], self.dungeon_level),
+            'ring_des_lebens_1': from_dungeon_level([[28, 1], [0, 9]], self.dungeon_level),
+            'ring_des_schutzes_1': from_dungeon_level([[28, 1], [0, 9]], self.dungeon_level),
+            'ring_des_schadens_1': from_dungeon_level([[28, 1,], [0, 9]], self.dungeon_level),
+            'ring_des_lebens_2': from_dungeon_level([[28, 9], [0, 17]], self.dungeon_level),
+            'ring_des_schutzes_2': from_dungeon_level([[28, 9], [0, 17]], self.dungeon_level),
+            'ring_des_schadens_2': from_dungeon_level([[28, 9], [0, 17]], self.dungeon_level),
+            'ring_des_lebens_3': from_dungeon_level([[28, 17]], self.dungeon_level),
+            'ring_des_schutzes_3': from_dungeon_level([[28, 17]], self.dungeon_level),
+            'ring_des_schadens_3': from_dungeon_level([[28, 17]], self.dungeon_level),
+            'leder_robe': from_dungeon_level([[15, 1], [0, 9]], self.dungeon_level),
+            'ketten_ruestung': from_dungeon_level([[15, 9], [0,17]], self.dungeon_level),
+            'ritter_ruestung': from_dungeon_level([[15, 17]], self.dungeon_level),
             'der_ring_aus_den_legenden': from_dungeon_level([[1, 1]], self.dungeon_level),
 
 
         }
-        if not any([entity for entity in entities if entity.x == self.treasure_x and entity.y == self.treasure_y]):
+        if not any([entity for entity in entities if entity.x == self.treasure_x and entity.y == self.treasure_y and self.tiles[entity.x][entity.y].blocked]):
             treasure_choice = random_choice_from_dict(treasure_chances)
-                        
+
+            if treasure_choice == 'leder_robe':
+                                equippable_component = Equippable(EquipmentSlots.ARMOR, power_bonus=1, max_hp_bonus=20, defense_bonus=1)
+                                item = Entity(self.treasure_x, self.treasure_y, 'M', libtcod.darker_orange, 'Leder Robe', equippable=equippable_component)
+                                entities.append(item)
+
+            elif treasure_choice == 'ketten_ruestung':
+                                equippable_component = Equippable(EquipmentSlots.ARMOR, power_bonus=3, max_hp_bonus=50, defense_bonus=5)
+                                item = Entity(self.treasure_x, self.treasure_y, 'M', libtcod.darker_orange, 'Kettenruestung', equippable=equippable_component)
+                                entities.append(item)
+
+            elif treasure_choice == 'ritter_ruestung':
+                                equippable_component = Equippable(EquipmentSlots.ARMOR, power_bonus=9, max_hp_bonus=99, defense_bonus=9)
+                                item = Entity(self.treasure_x, self.treasure_y, 'M', libtcod.darker_orange, 'Ritterruestung', equippable=equippable_component)
+                                entities.append(item)
+            
+            elif treasure_choice == 'der_ring_aus_den_legenden':
+                                equippable_component = Equippable(EquipmentSlots.ARMOR, power_bonus=300, max_hp_bonus=0, defense_bonus=-1)
+                                item = Entity(self.treasure_x, self.treasure_y, '+', libtcod.yellow, 'Ring Der Legenden', equippable=equippable_component)
+                                entities.append(item)           
                             
-            if treasure_choice == 'ring_des_lebens_1':
+            elif treasure_choice == 'ring_des_lebens_1':
                                 equippable_component = Equippable(EquipmentSlots.SPECIAL_SLOT, max_hp_bonus=20)
                                 item = Entity(self.treasure_x, self.treasure_y, 'o', libtcod.violet, 'Ring des Lebens 1', equippable=equippable_component,)
                                 entities.append(item)
@@ -257,25 +276,7 @@ class GameMap:
                                 item = Entity(self.treasure_x, self.treasure_y, 'o', libtcod.red, 'Ring des Schadens 3', equippable=equippable_component)
                                 entities.append(item)
 
-            elif treasure_choice == 'leder_robe':
-                                equippable_component = Equippable(EquipmentSlots.ARMOR, power_bonus=1, max_hp_bonus=20, defense_bonus=1)
-                                item = Entity(self.treasure_x, self.treasure_y, 'M', libtcod.darker_orange, 'Leder Robe', equippable=equippable_component)
-                                entities.append(item)
-
-            elif treasure_choice == 'ketten_ruestung':
-                                equippable_component = Equippable(EquipmentSlots.ARMOR, power_bonus=3, max_hp_bonus=50, defense_bonus=5)
-                                item = Entity(self.treasure_x, self.treasure_y, 'M', libtcod.darker_orange, 'Kettenruestung', equippable=equippable_component)
-                                entities.append(item)
-
-            elif treasure_choice == 'ritter_ruestung':
-                                equippable_component = Equippable(EquipmentSlots.ARMOR, power_bonus=20, max_hp_bonus=100, defense_bonus=20)
-                                item = Entity(self.treasure_x, self.treasure_y, 'M', libtcod.darker_orange, 'Ritterruestung', equippable=equippable_component)
-                                entities.append(item)
             
-            elif treasure_choice == 'der_ring_aus_den_legenden':
-                                equippable_component = Equippable(EquipmentSlots.ARMOR, power_bonus=300, max_hp_bonus=0, defense_bonus=-1)
-                                item = Entity(self.treasure_x, self.treasure_y, '+', libtcod.yellow, 'Ring Der Legenden', equippable=equippable_component)
-                                entities.append(item)
         
 
         for i in range(number_of_monsters):
@@ -341,19 +342,19 @@ class GameMap:
                                   item=item_component)
                 
                 elif item_choice == 'dolch':
-                    equippable_component = Equippable(EquipmentSlots.MAIN_HAND, power_bonus=3)
+                    equippable_component = Equippable(EquipmentSlots.MAIN_HAND, power_bonus=8)
                     item = Entity(x, y, '/', libtcod.darker_orange, 'Dolch', equippable=equippable_component)
 
                 elif item_choice == 'kurz_schwert':
-                    equippable_component = Equippable(EquipmentSlots.MAIN_HAND, power_bonus=6)
+                    equippable_component = Equippable(EquipmentSlots.MAIN_HAND, power_bonus=11)
                     item = Entity(x, y, '/', libtcod.darker_orange, 'Kurzschwert', equippable=equippable_component)
 
                 elif item_choice == 'lang_schwert':
-                    equippable_component = Equippable(EquipmentSlots.MAIN_HAND, power_bonus=12)
+                    equippable_component = Equippable(EquipmentSlots.MAIN_HAND, power_bonus=18)
                     item = Entity(x, y, '/', libtcod.darker_orange, 'Langschwert', equippable=equippable_component)
 
                 elif item_choice == 'gross_schwert':
-                    equippable_component = Equippable(EquipmentSlots.MAIN_HAND, power_bonus=29)
+                    equippable_component = Equippable(EquipmentSlots.MAIN_HAND, power_bonus=35)
                     item = Entity(x, y, '/', libtcod.darker_orange, 'Grossschwert', equippable=equippable_component)
 
                 elif item_choice == 'rund_schild':

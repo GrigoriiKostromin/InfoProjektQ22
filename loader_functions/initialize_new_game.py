@@ -88,7 +88,7 @@ equipment_component = Equipment()
 
 hp = 150
 defense = 0
-power = 2
+power = 1
 def get_game_variables(constants):
     fighter_component = Fighter(hp, defense, power) # fighter_component gibt den Spieler Werte, die n�tig sind, um zu k�mpfen
     inventory_component = Inventory(26) # Hier wird festgelegt, dass der Spieler 26 Pl�tze im Inventar hat
@@ -96,23 +96,23 @@ def get_game_variables(constants):
                     fighter=fighter_component, inventory=inventory_component, equipment=equipment_component) # Erzeugen eines Spieler aus der Entity Klasse 
     entities = [player]
 
-    equippable_component = Equippable(EquipmentSlots.MAIN_HAND, max_hp_bonus=0, power_bonus=1, defense_bonus=0)
-    stick = Entity(0, 0, '/', libtcod.dark_orange, 'Stock', equippable=equippable_component)
+    equippable_component = Equippable(EquipmentSlots.MAIN_HAND, max_hp_bonus=0, power_bonus=6, defense_bonus=0)
+    stick = Entity(0, 0, '/', libtcod.grey, 'Stock', equippable=equippable_component)
     player.inventory.add_item(stick)
     player.equipment.toggle_equip(stick)
 
     equippable_component = Equippable(EquipmentSlots.OFF_HAND, max_hp_bonus=0, power_bonus=0, defense_bonus=0)
-    fassdeckel = Entity(0, 0, '[', libtcod.dark_orange, 'Fassdeckel', equippable=equippable_component)
+    fassdeckel = Entity(0, 0, '[', libtcod.grey, 'Fassdeckel', equippable=equippable_component)
     player.inventory.add_item(fassdeckel)
     player.equipment.toggle_equip(fassdeckel)
 
     equippable_component = Equippable(EquipmentSlots.SPECIAL_SLOT, max_hp_bonus=0, power_bonus=0, defense_bonus=0)
-    norm_ring = Entity(0, 0, 'o', libtcod.grey, 'Gewöhnlicher Ring', equippable=equippable_component)
+    norm_ring = Entity(0, 0, 'o', libtcod.grey, 'Gewoehnlicher Ring', equippable=equippable_component)
     player.inventory.add_item(norm_ring)
     player.equipment.toggle_equip(norm_ring)
 
     equippable_component = Equippable(EquipmentSlots.ARMOR, max_hp_bonus=10, power_bonus=0, defense_bonus=0)
-    gewandt = Entity(0, 0, 'M', libtcod.dark_orange, 'Seidegewandt', equippable=equippable_component)
+    gewandt = Entity(0, 0, 'M', libtcod.grey, 'Seidegewandt', equippable=equippable_component)
     player.inventory.add_item(gewandt)
     player.equipment.toggle_equip(gewandt)
 

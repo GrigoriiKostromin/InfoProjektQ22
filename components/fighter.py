@@ -44,7 +44,7 @@ class Fighter:
     def take_damage(self, amount):
         #Liste für Ergebnisse
         results = []
-
+        
         self.hp -= amount
 
         #Wenn Spieler tot, Liste erweitern    
@@ -68,7 +68,8 @@ class Fighter:
 
         #Liste wird erweitert
         if damage > 0:
-            target.fighter.take_damage(damage)
+            
+            
             results.append({'message': Message('{0} verursacht am {1} {2} Schaden.'.format(
                 self.owner.name.capitalize(), target.name, str(damage)), libtcod.white)})
 
