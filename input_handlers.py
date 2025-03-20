@@ -121,6 +121,9 @@ def handle_main_menu(key): # Hier ganz einfach die Inputs für das Startmenü
         return {'load_game': True}
     elif key_char == 'c' or  key.vk == libtcod.KEY_ESCAPE:
         return {'exit': True}
+    if key.vk == libtcod.KEY_F11:
+        # F11: Bildschrimgröße maximal
+        return {'fullscreen': True}
 
     return {}
 
@@ -129,6 +132,9 @@ def handle_end_menu(key): # Hier ganz einfach die Inputs für das Startmenü
 
     if key_char == 'a' or  key.vk == libtcod.KEY_ESCAPE:
         return {'exit': True}
+    if key.vk == libtcod.KEY_F11:
+        # F11: Bildschrimgröße maximal
+        return {'fullscreen': True}
 
     return {}
 

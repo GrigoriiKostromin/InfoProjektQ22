@@ -45,6 +45,7 @@ def main():
 
     key = libtcod.Key()
     mouse = libtcod.Mouse()
+    
 
     while not libtcod.console_is_window_closed(): 
         libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS | libtcod.EVENT_MOUSE, key, mouse)
@@ -63,6 +64,7 @@ def main():
             new_game = action.get('new_game')
             load_saved_game = action.get('load_game')
             exit_game = action.get('exit')
+            fullscreen = action.get('fullscreen')
 
             if show_load_error_message and (new_game or load_saved_game or exit_game):
                 show_load_error_message = False
@@ -79,6 +81,8 @@ def main():
                     show_load_error_message = True
             elif exit_game:
                 break
+            elif fullscreen:
+                libtcod.console_set_fullscreen(not libtcod.console_is_fullscreen())
 
         else:
             libtcod.console_clear(con)
@@ -111,7 +115,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
 
         #Wann man das Level 25 erreicht ist das Spiel vorbei
         if game_map.game_end() == True:
-                    end()
+                    end(constants['screen_width'],constants['screen_height'])
                     break
                         
 
@@ -371,7 +375,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
 
 
 #endmenü
-def end():
+def end(screen_width,screen_height):
     
     constants = get_constants() # Nutzt die Funktion in "initialize_new_game.py" um die ganzen Variablen zu laden
 
@@ -383,7 +387,7 @@ def end():
     #importieren von assests (bilder)
     libtcod.console_set_custom_font('arial10x10.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
     #Erzeugen eines Fensters
-    libtcod.console_init_root(constants['screen_width'], constants['screen_height'], constants['window_title'], False)
+    
 
 
     #erstellen einer Konsole
@@ -391,11 +395,6 @@ def end():
     #Erstellen einer weitern Konsole
     panel = libtcod.console_new(constants['screen_width'], constants['panel_height'])
 
-    player = None
-    entities = []
-    game_map = None
-    message_log = None
-    game_state = None
 
     show_end_menu = True
     
@@ -418,16 +417,18 @@ def end():
             action = handle_end_menu(key)
 
             exit_game = action.get('exit')
-           
+            fullscreen = action.get('fullscreen')
             
 
             
             if exit_game:
                 break
+            if fullscreen:
+                libtcod.console_set_fullscreen(not libtcod.console_is_fullscreen())
         
         else:
             libtcod.console_clear(con)
-            play_game(player, entities, game_map, message_log, game_state, con, panel, constants,turn_num_monster = 0)
+            
 
             show_end_menu = True
         

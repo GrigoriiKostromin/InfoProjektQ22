@@ -171,7 +171,7 @@ class GameMap:
             'troll': 80,
             'ork': from_dungeon_level([[15, 3], [30, 5], [50, 7],[40, 13]], self.dungeon_level),
             'spinne': from_dungeon_level([[30, 2], [40, 5], [25, 9]], self.dungeon_level),
-            'riese': from_dungeon_level([[10, 5], [15, 7], [20, 9], [25, 13], [30, 17], [40, 19]], self.dungeon_level)
+            'riese': from_dungeon_level([[5, 5], [10, 7], [15, 9], [20, 13], [30, 17], [40, 19]], self.dungeon_level)
         }
         
         #Eine Liste, in der die Wahrscheinlichkeiten im Bezug zum level geändert werden
@@ -243,7 +243,7 @@ class GameMap:
                                 entities.append(item)
 
             elif treasure_choice == 'ring_des_lebens_3':
-                                equippable_component = Equippable(EquipmentSlots.SPECIAL_SLOT, max_hp_bonus=200)
+                                equippable_component = Equippable(EquipmentSlots.SPECIAL_SLOT, max_hp_bonus=300)
                                 item = Entity(self.treasure_x, self.treasure_y, 'o', libtcod.violet, 'Ring des Lebens 3', equippable=equippable_component)
                                 entities.append(item)
 
@@ -258,12 +258,12 @@ class GameMap:
                                 entities.append(item)
 
             elif treasure_choice == 'leder_robe':
-                                equippable_component = Equippable(EquipmentSlots.ARMOR, power_bonus=1, max_hp_bonus=10, defense_bonus=1)
+                                equippable_component = Equippable(EquipmentSlots.ARMOR, power_bonus=1, max_hp_bonus=20, defense_bonus=1)
                                 item = Entity(self.treasure_x, self.treasure_y, 'M', libtcod.darker_orange, 'Leder Robe', equippable=equippable_component)
                                 entities.append(item)
 
             elif treasure_choice == 'ketten_ruestung':
-                                equippable_component = Equippable(EquipmentSlots.ARMOR, power_bonus=2, max_hp_bonus=50, defense_bonus=5)
+                                equippable_component = Equippable(EquipmentSlots.ARMOR, power_bonus=3, max_hp_bonus=50, defense_bonus=5)
                                 item = Entity(self.treasure_x, self.treasure_y, 'M', libtcod.darker_orange, 'Kettenruestung', equippable=equippable_component)
                                 entities.append(item)
 
@@ -274,7 +274,7 @@ class GameMap:
             
             elif treasure_choice == 'der_ring_aus_den_legenden':
                                 equippable_component = Equippable(EquipmentSlots.ARMOR, power_bonus=300, max_hp_bonus=0, defense_bonus=-1)
-                                item = Entity(self.treasure_x, self.treasure_y, '+', libtcod.darker_yellow, 'Verfluchte Halskette', equippable=equippable_component)
+                                item = Entity(self.treasure_x, self.treasure_y, '+', libtcod.yellow, 'Ring Der Legenden', equippable=equippable_component)
                                 entities.append(item)
         
 
@@ -294,14 +294,14 @@ class GameMap:
                                      ai=ai_component) # Hier ein Troll. Ork bekommt eine AI und Kampfattribute
                     
                 elif monster_choice == 'riese':
-                    fighter_component = Fighter(hp=120, defense=5, power=50)#Kampfattribute, die mit der Entity Klasse in Verbindug stehen
+                    fighter_component = Fighter(hp=150, defense=5, power=70)#Kampfattribute, die mit der Entity Klasse in Verbindug stehen
                     ai_component = BasicMonster()   #AI, die "später" das autonome Bewegen der Gegner ermöglichen wird
 
                     monster = Entity(x, y, 'T', libtcod.darker_blue, 'Riese', blocks=True, fighter=fighter_component,
                                      ai=ai_component) # Hier ein Troll. Ork bekommt eine AI und Kampfattribute   
                     
                 elif monster_choice == 'spinne':
-                    fighter_component = Fighter(hp=1, defense=0, power=25)#Kampfattribute, die mit der Entity Klasse in Verbindug stehen
+                    fighter_component = Fighter(hp=1, defense=0, power=33)#Kampfattribute, die mit der Entity Klasse in Verbindug stehen
                     ai_component = BasicMonster()   #AI, die "später" das autonome Bewegen der Gegner ermöglichen wird
 
                     monster = Entity(x, y, 'o', libtcod.black, "Spinne", blocks=True, fighter=fighter_component,
@@ -327,7 +327,7 @@ class GameMap:
                 
 
                 if item_choice == 'blitzzauber':
-                    item_component = Item(use_function=cast_lightning, damage=55, maximum_range=5)
+                    item_component = Item(use_function=cast_lightning, damage=100, maximum_range=5)
                     item = Entity(x, y, '#', libtcod.yellow, 'Blitzzauber', render_order=RenderOrder.ITEM,
                                   item=item_component)
                     
@@ -361,7 +361,7 @@ class GameMap:
                     item = Entity(x, y, '[', libtcod.darker_orange, 'Rundschild', equippable=equippable_component)
                 
                 elif item_choice == 'gross_schild':
-                    equippable_component = Equippable(EquipmentSlots.OFF_HAND, defense_bonus=4)
+                    equippable_component = Equippable(EquipmentSlots.OFF_HAND, defense_bonus=6)
                     item = Entity(x, y, '[', libtcod.darker_orange, 'Grossschild', equippable=equippable_component)
                 
                 elif item_choice == 'grosser_heiltrank':
