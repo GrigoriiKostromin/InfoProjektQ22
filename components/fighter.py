@@ -1,8 +1,7 @@
 import tcod as libtcod
 
 from game_messages import Message
-from components.equipment import EquipmentSlots
-from components.equippable import Equippable
+
 
 class Fighter:
     #Klasse, mit dem man Entities das Kämpfen ermöglicht. Diese Klasse sorgt für eine Erweiterung der Entity Klasse. Ist aber nicht in die Entity Klasse implementiert, da es auch Objekte benötigt werden, welche keine "Kampfeigenschaften" besitzen sollten

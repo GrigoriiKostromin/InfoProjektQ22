@@ -157,7 +157,7 @@ class GameMap:
             self.tiles[x][y].block_sight = False
 
     def place_entities(self, room, entities):
-        max_monsters_per_room = from_dungeon_level([[2, 1], [3, 4], [5, 9], [7, 13], [11, 20]], self.dungeon_level)
+        max_monsters_per_room = from_dungeon_level([[2, 1], [3, 4], [4, 9], [6, 13], [9, 17], [11, 22]], self.dungeon_level)
         max_items_per_room = from_dungeon_level([[1, 1], [2, 3], [3, 13]], self.dungeon_level)
         # Hier wird eine zufällige Nummer generiert, wie viele Gegner auf der Karte auftauchen sollen
         number_of_monsters = randint(0, max_monsters_per_room)
@@ -192,9 +192,9 @@ class GameMap:
         }
 
         treasure_chances = {
-            'ring_des_lebens_1': from_dungeon_level([[3, 1], [0, 9]], self.dungeon_level),
-            'ring_des_schutzes_1': from_dungeon_level([[3, 1], [0, 9]], self.dungeon_level),
-            'ring_des_schadens_1': from_dungeon_level([[3, 1,], [0, 9]], self.dungeon_level),
+            'ring_des_lebens_1': from_dungeon_level([[30, 1], [0, 9]], self.dungeon_level),
+            'ring_des_schutzes_1': from_dungeon_level([[30, 1], [0, 9]], self.dungeon_level),
+            'ring_des_schadens_1': from_dungeon_level([[30, 1,], [0, 9]], self.dungeon_level),
             'ring_des_lebens_2': from_dungeon_level([[30, 9], [0, 17]], self.dungeon_level),
             'ring_des_schutzes_2': from_dungeon_level([[30, 9], [0, 17]], self.dungeon_level),
             'ring_des_schadens_2': from_dungeon_level([[30, 9], [0, 17]], self.dungeon_level),
@@ -214,17 +214,17 @@ class GameMap:
                             
             if treasure_choice == 'ring_des_lebens_1':
                                 equippable_component = Equippable(EquipmentSlots.SPECIAL_SLOT, max_hp_bonus=20)
-                                item = Entity(self.treasure_x, self.treasure_y, 'o', libtcod.violet, 'Ring des Lebens 1', '+20 Max HP', equippable=equippable_component,)
+                                item = Entity(self.treasure_x, self.treasure_y, 'o', libtcod.violet, 'Ring des Lebens 1', equippable=equippable_component,)
                                 entities.append(item)
 
             elif treasure_choice == 'ring_des_schutzes_1':
                                 equippable_component = Equippable(EquipmentSlots.SPECIAL_SLOT, defense_bonus=2)
-                                item = Entity(self.treasure_x, self.treasure_y, 'o', libtcod.blue, 'Ring des Schutzes 1','+20 Max HP',equippable=equippable_component)
+                                item = Entity(self.treasure_x, self.treasure_y, 'o', libtcod.blue, 'Ring des Schutzes 1',equippable=equippable_component)
                                 entities.append(item)
 
             elif treasure_choice == 'ring_des_schadens_1':
                                 equippable_component = Equippable(EquipmentSlots.SPECIAL_SLOT, power_bonus=2)
-                                item = Entity(self.treasure_x, self.treasure_y, 'o', libtcod.red, 'Ring des Schadens 1','+20 Max HP', equippable=equippable_component)
+                                item = Entity(self.treasure_x, self.treasure_y, 'o', libtcod.red, 'Ring des Schadens 1', equippable=equippable_component)
                                 entities.append(item)
 
             elif treasure_choice == 'ring_des_lebens_2':

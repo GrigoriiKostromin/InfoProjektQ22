@@ -1,12 +1,5 @@
 'player_index', (0, 5)
-<<<<<<< HEAD
-'entities', (512, 4160)
-'game_map', (5120, 93009)
-'message_log', (98304, 542)
-'game_state', (99328, 37)
-=======
-'entities', (512, 2529)
-'game_map', (3072, 65850)
-'message_log', (69120, 485)
-'game_state', (69632, 47)
->>>>>>> d698e275a0cbcb5c279a0d8a727f4e8ae2c97492
+'entities', (512, 2935)
+'game_map', (3584, 93009)
+'message_log', (96768, 542)
+'game_state', (97792, 37)
