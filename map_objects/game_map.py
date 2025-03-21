@@ -208,7 +208,7 @@ class GameMap:
 
 
         }
-        if not any([entity for entity in entities if entity.x == self.treasure_x and entity.y == self.treasure_y and self.tiles[entity.x][entity.y].blocked]):
+        if not any([entity for entity in entities if entity.x == self.treasure_x and entity.y == self.treasure_y]):
             treasure_choice = random_choice_from_dict(treasure_chances)
 
             if treasure_choice == 'leder_robe':
