@@ -86,7 +86,7 @@ def get_constants(): # Hier die Daten die wir in Engine festlegten "ausgeklammer
 
 equipment_component = Equipment()
 
-hp = 150
+hp = 15000
 defense = 0
 power = 1
 def get_game_variables(constants):
