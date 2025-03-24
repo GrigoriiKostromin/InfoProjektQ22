@@ -103,7 +103,8 @@ class GameMap:
                     # Hier wird der Spieler im zuerst generierten Raum (num_rooms ist nur ganz am Anfang 0, direkt danach wird die Nummer immer +1 gemacht) platziert
                     player.x = new_x
                     player.y = new_y
-                    
+                    self.treasure_x = 0
+                    self.treasure_y = 0
                     
                     
                 
