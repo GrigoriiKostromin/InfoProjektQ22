@@ -136,11 +136,13 @@ def clear_all(con, entities):
         #console und Entititäten werden aus dem alten Bild entfernt und in ein Neues Hinzugefügt
         clear_entity(con, entity)
 
-#Aussehen von Entititäten
+#Rendern von Entititäten
 def draw_entity(con, entity, fov_map, game_map):
     #Entititäten werden nur gerendert, wenn sie im Teil der Karte des Sichtfeldes sind 
     if libtcod.map_is_in_fov(fov_map, entity.x, entity.y) or (entity.stairs and game_map.tiles[entity.x][entity.y].explored):
+        #Farbe
         libtcod.console_set_default_foreground(con, entity.color)
+        #Position + ZEichen
         libtcod.console_put_char(con, entity.x, entity.y, entity.char, libtcod.BKGND_NONE)
 
 
